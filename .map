@@ -1,0 +1,49 @@
+Section          Base   Top    High   Length
+---------------- ------ ------ ------ -------
+.icon            D1A882 D1A890             Eh
+.init.libs       D1A890 D1A8E8            58h
+.libs            D1A8E8 D1A907            1Fh
+.init.clock      D1A907 D1A907             0h
+.init.reruncheck D1A907 D1A907             0h
+.init            D1A907 D1A927            20h
+.fini            D1A927 D1A95B            34h
+.text            D1A95B D1A995            3Ah
+.data            D1A995 D1A995             0h
+.rodata          D1A995 D1A9B7            22h
+.init_array      000000 000000             0h
+.ctors           000000 000000             0h
+.dtors           000000 000000             0h
+.fini_array      000000 000000             0h
+.bss             D052C6 D052C6 D13FD8      0h
+.header          D1A87F D1A882             3h
+
+Label                       Value
+-------------------------   ------
+___low_bss                = D052C6
+___len_bss                = 000000
+___heaptop                = D13FD8
+___heapbot                = D052C6
+___libs                   = D1A8E8
+___init_array_count       = 000000
+___ctors_count            = 000000
+___dtors_count            = 000000
+___fini_array_count       = 000000
+__stack                   = D1A87E
+_os_DisableHomeTextBuffer = D1A95B
+_os_EnableHomeTextBuffer  = D1A96D
+.missingappvar            = D1A995
+.libloadname              = D1A99A
+.libloadnamelen           = 000007
+.webaddress               = D1A9A2
+__start                   = D1A907
+___exithl                 = D1A927
+skip._exit                = D1A927
+skip.__Exit               = D1A927
+skip._abort               = D1A927
+_exit.sp                  = D1A928
+_exit.flash_wait_states   = D1A932
+_main                     = D1A97F
+lib.LibLoad               = D1A8E8
+_#gfx_Begin               = D1A8FB
+_#gfx_End                 = D1A8FF
+_#gfx_SetDraw             = D1A903

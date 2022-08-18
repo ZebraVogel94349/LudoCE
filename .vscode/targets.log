@@ -1,0 +1,304 @@
+make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
+makefile:35: /meta/makefile.mk: No such file or directory
+make: *** No rule to make target '/meta/makefile.mk'.  Stop.
+
+# GNU Make 4.3
+# Built for Windows32
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+ 
+
+# Make data base, printed on Thu Aug 18 23:43:44 2022
+
+# Variables
+
+# environment
+CUDA_PATH_V11_5 = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5
+# environment
+SYSTEMDRIVE = C:
+# environment
+LC_ALL = C
+# makefile (from 'makefile', line 24)
+OBJDIR = obj
+# environment
+USERPROFILE = C:\Users\eins_maxe
+# environment
+VBOX_MSI_INSTALL_PATH = C:\Program Files\Oracle\VirtualBox\
+# makefile (from 'makefile', line 25)
+BINDIR = bin
+# environment
+C_INCLUDE_PATH = C:\Users\eins_maxe\scoop\apps\gcc\current\in 
+clude
+# environment
+LOCALAPPDATA = C:\Users\eins_maxe\AppData\Local
+# environment
+VSCODE_CWD = C:\Users\eins_maxe\OneDrive\Desktop\CE-Toolchain\CEdev\examples\LudoCE\src
+# environment
+SYSTEMROOT = C:\WINDOWS
+# environment
+NVCUDASAMPLES11_5_ROOT = C:\ProgramData\NVIDIA Corporation\CUDA Samples\v11.5
+# environment
+PROCESSOR_LEVEL = 25
+# environment
+PSMODULEPATH = C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+# default
+MAKE_COMMAND := C:/Users/eins_maxe/scoop/apps/make/current/bin/make.exe
+# automatic
+@D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
+# environment
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_26356_SEGBTEQZWQSCZOKM
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# automatic
+%D = $(patsubst %/,%,$(patsubst %\,%,$(dir $%)))
+# automatic
+^D = $(patsubst %/,%,$(patsubst %\,%,$(dir $^)))
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = C:\Users\eins_maxe\AppData\Roaming\Code\CachedData\e4503b30fc78200f846c62cf8091b76ff5547662
+# environment
+LANG = C
+# default
+.LOADED := 
+# environment
+TMP = C:\Users\EINS_M~1\AppData\Local\Temp
+# default
+.INCLUDE_DIRS = .
+# makefile (from 'makefile', line 11)
+DEBUGMODE = NDEBUG
+# environment
+PROCESSOR_ARCHITEW6432 = AMD64
+# makefile
+MAKEFLAGS = prR
+# makefile (from 'makefile', line 14)
+ICON = iconc.png
+# environment
+ONEDRIVE = C:\Users\eins_maxe\OneDrive
+# environment
+POWERSHELL_DISTRIBUTION_CHANNEL = MSI:Windows 10 Home
+# makefile
+CURDIR := c:/Users/eins_maxe/OneDrive/Desktop/CE-Toolchain/CEdev/examples/LudoCE
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# automatic
+*D = $(patsubst %/,%,$(patsubst %\,%,$(dir $*)))
+# environment
+PROGRAMFILES = C:\Program Files (x86)
+# environment
+MFLAGS = -prR
+# default
+.SHELLFLAGS := -c
+# environment
+COMMONPROGRAMW6432 = C:\Program Files\Common Files
+# makefile (from 'makefile', line 17)
+L = graphx
+# automatic
++D = $(patsubst %/,%,$(patsubst %\,%,$(dir $+)))
+# makefile (from 'makefile', line 1)
+MAKEFILE_LIST := makefile
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_PID = 26356
+# environment
+CUDA_PATH = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5
+# automatic
+?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
+# automatic
+*F = $(notdir $*)
+# makefile (from 'makefile', line 15)
+DESCRIPTION = "Roulette"
+# automatic
+<D = $(patsubst %/,%,$(patsubst %\,%,$(dir $<)))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"de","availableLanguages":{},"_languagePackSupport":true}
+# environment
+ONEDRIVECONSUMER = C:\Users\eins_maxe\OneDrive
+# default
+MAKE_HOST := Windows32
+# environment
+PROGRAMDATA = C:\ProgramData
+# default
+SHELL := sh.exe
+# environment
+HOMEPATH = \Users\eins_maxe
+# default
+MAKECMDGOALS := all
+# environment
+DRIVERDATA = C:\Windows\System32\Drivers\DriverData
+# environment
+COMSPEC = C:\WINDOWS\system32\cmd.exe
+# environment
+WINDIR = C:\WINDOWS
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\libnvvp;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\NVIDIA Corporation\Nsight Compute 2021.3.1\;C:\WINDOWS\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python39\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python310\;C:\Users\eins_maxe\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\PyCharm Community Edition 2021.3\bin;C:\Program Files\Git\cmd;C:\Program Files\PowerShell\7\;C:\Users\eins_maxe\scoop\apps\python\current\Scripts;C:\Users\eins_maxe\scoop\apps\python\current;C:\Users\eins_maxe\scoop\apps\gcc\current\bin;C:\Users\eins_maxe\scoop\shims;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python39\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\eins_maxe\AppData\Local\Programs\Python\Python310\;C:\Users\eins_maxe\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\PyCharm Community Edition 2021.3\bin;C:\Users\eins_maxe\scoop\apps\gcc\11.2.0\bin;;C:\Users\eins_maxe\AppData\Local\Programs\Microsoft VS Code\bin
+# environment
+COMPUTERNAME = MAXISPC
+# default
+MAKEFILES := 
+# makefile (from 'makefile', line 13)
+COMPRESSED_MODE = zx7
+# automatic
+^F = $(notdir $^)
+# environment
+AMDSTOREMIPATH = C:\Program Files\AMD\StoreMI\
+# environment
+PROMPT = $P$G
+# environment
+NVTOOLSEXT_PATH = C:\Program Files\NVIDIA Corporation\NvToolsExt\
+# environment
+LOGONSERVER = \\MAXISPC
+# environment
+USERNAME = eins_maxe
+# environment
+COMMONPROGRAMFILES = C:\Program Files (x86)\Common Files
+# automatic
+?F = $(notdir $?)
+# environment
+PROGRAMW6432 = C:\Program Files
+# makefile (from 'makefile', line 10)
+NAME = LUDO
+# environment
+PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+# automatic
++F = $(notdir $+)
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+USERDOMAIN = MAXISPC
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+OS = Windows_NT
+# makefile (from 'makefile', line 32)
+USE_FLASH_FUNCTIONS = YES
+# environment
+AMDRMSDKPATH = C:\Program Files\AMD\RyzenMasterSDK\
+# makefile
+.DEFAULT_GOAL := 
+# default
+MAKE_VERSION := 4.3
+# makefile (from 'makefile', line 26)
+GFXDIR = src/gfx
+# environment
+PROGRAMFILES(X86) = C:\Program Files (x86)
+# environment
+NVCUDASAMPLES_ROOT = C:\ProgramData\NVIDIA Corporation\CUDA Samples\v11.5
+# environment
+USERDOMAIN_ROAMINGPROFILE = MAXISPC
+# environment
+NUMBER_OF_PROCESSORS = 16
+# environment
+PUBLIC = C:\Users\Public
+# environment
+APPDATA = C:\Users\eins_maxe\AppData\Roaming
+# environment
+HOMEDRIVE = C:
+# environment
+PROCESSOR_ARCHITECTURE = x86
+# environment
+CPLUS_INCLUDE_PATH = C:\Users\eins_maxe\scoop\apps\gcc\current\include
+# environment
+PYCHARM COMMUNITY EDITION = C:\Program Files\JetBrains\PyCharm Community Edition 2021.3\bin;
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+TEMP = C:\Users\EINS_M~1\AppData\Local\Temp
+# environment
+VSCODE_IPC_HOOK = \\.\pipe\ed6335de87f301ea60666b2b39dfbe72-1.70.2-main-sock
+# makefile (from 'makefile', line 23)
+SRCDIR = src
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# default
+SUFFIXES := 
+# environment
+ALLUSERSPROFILE = C:\ProgramData
+# makefile (from 'makefile', line 12)
+COMPRESSED = YES
+# environment
+SESSIONNAME = Console
+# default
+.FEATURES := target-specific order-only second-expansion e 
+lse-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync load
+# environment
+PROCESSOR_REVISION = 2100
+# environment
+PROCESSOR_IDENTIFIER = AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD
+# variable set hash-table stats:
+# Load=112/1024=11%, Rehash=0, Collisions=12/147=8%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (key c:/Users/eins_maxe/OneDrive/Desktop/CE-Toolchain/CEdev/examples/LudoCE, mtime 1660858 
+825): 9 files, no impossibilities.
+
+# 9 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+makefile:
+#  Implicit rule search has not been done.
+#  Last modified 2022-08-18 23:31:29
+#  File has not been updated.
+
+# Not a target:
+/meta/makefile.mk:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=5/1024=0%, Rehash=0, Collisions=2/16=12%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 13 / storage = 88 B / avg = 6 B
+# current buf: size = 8174 B / used = 88 B / count = 13 / avg = 6 B
+
+# strcache performance: lookups = 18 / hit rate = 27%
+# hash-table stats:
+# Load=13/8192=0%, Rehash=0, Collisions=0/18=0%
+# Finished Make data base on Thu Aug 18 23:43:44 2022
+
+ 

@@ -12,7 +12,7 @@ DEBUGMODE   ?= NDEBUG
 COMPRESSED  ?= YES
 COMPRESSED_MODE = zx7
 ICON        ?= iconc.png
-DESCRIPTION ?= "Roulette"
+DESCRIPTION ?= "Ludo"
 
 L ?= graphx
 

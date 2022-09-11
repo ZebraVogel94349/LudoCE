@@ -30,90 +30,42 @@ void draw_board(){
 }
 
 int move_n_fields(int position, int n, int piece_color){
-    //Move forwards, if there is no way to reach the house
-    if(position + n < 40 && 
-        (position < 4 || 
-        (position > 9 && position < 14) ||
-        (position > 19 && position < 24) ||
-        (position > 29 && position < 34) ||
-        (piece_color != RED && (position > 3 && position < 10)) ||
-        (piece_color != YELLOW && (position > 13 && position < 20)) ||
-        (piece_color != GREEN && (position > 23 && position < 30)) ||
-        (piece_color != BLUE && (position > 33 && position < 40)))
-      ){
+    const int *h_size, *h_offset, *h_start;
+
+    switch (piece_color){
+        case BLUE:
+            h_size = &BOARD_DATA.BLUE.h_size;
+            h_offset = &BOARD_DATA.BLUE.h_offset;
+            h_start = &BOARD_DATA.BLUE.h_start;
+            break;
+        case RED:
+            h_size = &BOARD_DATA.RED.h_size;
+            h_offset = &BOARD_DATA.RED.h_offset;
+            h_start = &BOARD_DATA.RED.h_start;
+            break;
+        case YELLOW:
+            h_size = &BOARD_DATA.YELLOW.h_size;
+            h_offset = &BOARD_DATA.YELLOW.h_offset;
+            h_start = &BOARD_DATA.YELLOW.h_start;
+            break;
+        case GREEN:
+            h_size = &BOARD_DATA.GREEN.h_size;
+            h_offset = &BOARD_DATA.GREEN.h_offset;
+            h_start = &BOARD_DATA.GREEN.h_start;
+            break;
+    }
+
+    if(position + n + *h_offset >= *h_start && position + n + *h_offset < *h_start + *h_size){//move into house
+        return position + n + *h_offset;
+    }
+    else if((position >= *h_start && position + n < *h_start + *h_size)){//move inside house
         return position + n;
     }
-    else if(position + n > 39 && position < 40 && piece_color != BLUE){//go from 39 to 0
+    else if(position + n < BOARD_DATA.end_of_board){//move normally
+        return position + n;
+    }
+    else if(position < BOARD_DATA.end_of_board){//go from 39 to 0
         return n - 1;
-    }
-    //Move blue into or inside the house
-    else if(piece_color == BLUE && (position > 33 && position < 44)){
-        if(position + n < 44){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    //Move red before, into or inside the house
-    else if(piece_color == RED && (position > 3 && position < 10)){
-        if(position + n + 34 > 43 && position + n + 34 < 48){
-            return position + n + 34;
-        }
-        else if(position + n < 10){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    else if(piece_color == RED && (position > 43 && position < 48)){
-        if(position + n < 48){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    //Move yellow before, into or inside the house
-    else if(piece_color == YELLOW && (position > 13 && position < 20)){
-        if(position + n + 28 > 47 && position + n + 28 < 52){
-            return position + n + 28;
-        }
-        else if(position + n < 20){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    else if(piece_color == YELLOW && (position > 47 && position < 52)){
-        if(position + n < 52){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    //Move green before, into or inside the house
-    else if(piece_color == GREEN && (position > 23 && position < 30)){
-        if(position + n + 22 > 51 && position + n + 22 < 56){
-            return position + n + 22;
-        }
-        else if(position + n < 30){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
-    }
-    else if(piece_color == GREEN && (position > 51 && position < 56)){
-        if(position + n < 56){
-            return position + n;
-        }
-        else{
-            return 255;
-        }
     }
     else{
         return 255;
@@ -133,15 +85,16 @@ int main(){
         draw_board();
         int pos = 0;
 
-        for(int i = 0; i < 20; i++){
+        //Testing the move_n_fields() function
+        for(int i = 0; i < 100; i++){
             draw_board();
             draw_field(BOARD[pos][0], BOARD[pos][1], BLACK);
             gfx_SwapDraw();
             draw_board();
             draw_field(BOARD[pos][0], BOARD[pos][1], BLACK);
             gfx_SwapDraw();
-            pos = move_n_fields(pos, 6, RED);
-            msleep(200);
+            pos = move_n_fields(pos, 1, BLUE);
+            msleep(100);
         }
 
         kb_Scan();

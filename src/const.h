@@ -25,21 +25,30 @@ const int BOARD[72][3] = {{LEFT_MARGIN + 126, TOP_MARGIN, BLUE}, {LEFT_MARGIN + 
                         {LEFT_MARGIN, TOP_MARGIN, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN, GREEN}, {LEFT_MARGIN, TOP_MARGIN + 21, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN + 21, GREEN}
                         };
 
-const struct BOARD_DATA{
-    const struct BLUE{
-        const int range[2] = {4, 10};
-        const int offset[2] = {0};
-    };
-    const struct RED{
-        const int range[2] = {4, 10};
-        const int offset[2] = {0};
-    };
-    const struct YELLOW{
-        const int range[2] = {4, 10};
-        const int offset[2] = {0};
-    };
-    const struct GREEN{
-        const int range[2] = {4, 10};
-        const int offset[2] = {0};
-    };
-};
+const struct{
+    struct{
+        int h_offset = {0};
+        int h_size = {4};
+        int h_start = {40};
+    } BLUE;
+
+    struct {
+        int h_offset = {34};
+        int h_size = {4};
+        int h_start = {44};
+    } RED;
+
+    struct{
+        int h_offset = {28};
+        int h_size = {4};
+        int h_start = {48};
+    } YELLOW;
+
+    struct{
+        int h_offset = {22};
+        int h_size = {4};
+        int h_start = {52};
+    } GREEN;
+
+    int end_of_board = 40;
+} BOARD_DATA;

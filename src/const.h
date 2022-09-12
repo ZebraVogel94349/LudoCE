@@ -50,5 +50,5 @@ const struct{
         int h_start = {52};
     } GREEN;
 
-    int end_of_board = 40;
+    int end_of_board = 39;
 } BOARD_DATA;

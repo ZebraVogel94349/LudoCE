@@ -40,8 +40,6 @@ void draw_board(){
 
 void redraw_board_part(int start, int end){
     for(int i = start; i <= end; i++){
-        //gfx_SetColor(BLUE);
-        gfx_Rectangle_NoClip(BOARD[i][0], BOARD[i][1], 20, 20);
         if(end <= BOARD_DATA.end_of_board){
             connect_fields(BOARD[i][0], BOARD[i][1], BOARD[i + 1][0], BOARD[i + 1][1]);
         }
@@ -49,7 +47,7 @@ void redraw_board_part(int start, int end){
             connect_fields(BOARD[BOARD_DATA.end_of_board][0], BOARD[BOARD_DATA.end_of_board][1], BOARD[0][0], BOARD[0][1]);
         }
     }
-    for(int i = start; i <= end; i++){
+    for(int i = start; i <= end + 1; i++){
         draw_field(BOARD[i][0], BOARD[i][1], BOARD[i][2]);
     }
     
@@ -118,18 +116,18 @@ int main(){
 
         //Testing the move_n_fields() function
         for(int i = 0; i < 45 && kb_Data[6] != kb_Clear; i++){
-            draw_field(BOARD[pos][0], BOARD[pos][1], BLACK);
+            draw_field(BOARD[pos][0], BOARD[pos][1], GREEN);
             gfx_SwapDraw();
-            draw_field(BOARD[pos][0], BOARD[pos][1], BLACK);
+            draw_field(BOARD[pos][0], BOARD[pos][1], GREEN);
             gfx_SwapDraw();
             pos = move_n_fields(pos, 1, BLUE);
             msleep(100);
             kb_Scan();
         }
         //Testing the redraw_board_part() function
-        redraw_board_part(0,46);
+        redraw_board_part(0,7);
         gfx_SwapDraw();
-        redraw_board_part(0,46);
+        redraw_board_part(0,7);
         gfx_SwapDraw();
         kb_Scan();
     }

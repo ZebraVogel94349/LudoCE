@@ -25,49 +25,44 @@ const int BOARD[72][3] = {{LEFT_MARGIN + 126, TOP_MARGIN, BLUE}, {LEFT_MARGIN + 
                         {LEFT_MARGIN, TOP_MARGIN, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN, GREEN}, {LEFT_MARGIN, TOP_MARGIN + 21, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN + 21, GREEN}
                         };
 
-int PLAYER[16] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71};
-
 const struct{
     struct{
         int h_offset = {39};
         int h_size = {4};
         int h_start = {40};
-        int hm_out = {0};
+        int startPoint = {0};
         int hm_pos = {56};
-        int hm_start = {0};
-        int hm_size = {4};
+        int playerNumberStart = {0};
     } BLUE;
 
     struct {
         int h_offset = {9};
         int h_size = {4};
         int h_start = {44};
-        int hm_out = {10};
+        int startPoint = {10};
         int hm_pos = {60};
-        int hm_start = {4};
-        int hm_size = {4};
+        int playerNumberStart = {4};
     } RED;
 
     struct{
         int h_offset = {19};
         int h_size = {4};
         int h_start = {48};
-        int hm_out = {20};
+        int startPoint = {20};
         int hm_pos = {64};
-        int hm_start = {8};
-        int hm_size = {4};
+        int playerNumberStart = {8};
     } YELLOW;
 
     struct{
         int h_offset = {29};
         int h_size = {4};
         int h_start = {52};
-        int hm_out = {30};
+        int startPoint = {30};
         int hm_pos = {68};
-        int hm_start = {12};
-        int hm_size = {4};
+        int playerNumberStart = {12};
     } GREEN;
-
+    
+    int player_count = 16;
     int end_of_board = 39;
     int end_of_home = 15;
 } BOARD_DATA;

@@ -12,8 +12,6 @@
 #include <fileioc.h>
 #include <graphx.h>
 
-#include <debug.h>
-
 #include "gfx/palette_gfx.h"
 #include "gfx/colors.h"
 #include "const.h"
@@ -124,16 +122,30 @@ int move_n_fields(int piece_color, int position, int n){
     }
 }
 
+int get_color(int playerNumber){
+    if(playerNumber >= BOARD_DATA.GREEN.playerNumberStart){
+        return GREEN;
+    }
+    else if(playerNumber >= BOARD_DATA.YELLOW.playerNumberStart){
+        return YELLOW;
+    }
+    else if(playerNumber >= BOARD_DATA.RED.playerNumberStart){
+        return RED;
+    }
+    else{
+        return BLUE;
+    }
+}
+
 int *move_player(int playerPositions[], int piece_color, int player, int old_position, int n){
     int new_position = move_n_fields(piece_color, old_position, n);
 
     for(int i = 0; i < BOARD_DATA.player_count; i++){
-        if(new_position == playerPositions[i] && (((i / BOARD_DATA.BLUE.h_size) < (player / BOARD_DATA.BLUE.h_size)) || (i / BOARD_DATA.BLUE.h_size) > (player / BOARD_DATA.BLUE.h_size + 3))){
+        if(new_position == playerPositions[i] && (get_color(player) != get_color(i))){//throw out
             playerPositions[i] = BOARD_DATA.BLUE.hm_pos + i;
-            dbg_printf("TEST");
             return playerPositions;
-        }else if(new_position == playerPositions[i] && (((i / BOARD_DATA.BLUE.h_size) >= (player / BOARD_DATA.BLUE.h_size)) && ((i / BOARD_DATA.BLUE.h_size) <= (player / BOARD_DATA.BLUE.h_size + 3)) && i != player)){
-            playerPositions[player] = old_position; // dont move
+        }else if(new_position == playerPositions[i] && get_color(player) == get_color(i) && i != player){
+            playerPositions[player] = old_position; //dont move
             return playerPositions;
         }else{
             playerPositions[player] = new_position;
@@ -178,7 +190,7 @@ int main(){
 
     toClear = playerPositions[4];
     *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 6);
-    *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 8);
+    *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 2);
     draw(playerPositions, toClear);
     toClear = playerPositions[5];
     *playerPositions = *move_player(playerPositions, RED, 5, playerPositions[5], 6);

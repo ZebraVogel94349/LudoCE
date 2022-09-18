@@ -71,8 +71,8 @@ int is_occupied(int position, int playerPositions[]){
     return false;
 }
 
-int move_n_fields(int piece_color, int player, int position, int n){
-    int h_size, h_offset, h_start, hm_pos, startPoint;
+int move_n_fields(int piece_color, int position, int n){
+    int h_size, h_offset, h_start, startPoint;
 
     switch (piece_color){
         case BLUE:
@@ -125,16 +125,15 @@ int move_n_fields(int piece_color, int player, int position, int n){
 }
 
 int *move_player(int playerPositions[], int piece_color, int player, int old_position, int n){
-    int new_position = move_n_fields(piece_color, player, old_position, n);
+    int new_position = move_n_fields(piece_color, old_position, n);
 
     for(int i = 0; i < BOARD_DATA.player_count; i++){
-        if(new_position == playerPositions[i] && (i < player / BOARD_DATA.BLUE.h_size || i > player / BOARD_DATA.BLUE.h_size + 3)){
+        if(new_position == playerPositions[i] && (((i / BOARD_DATA.BLUE.h_size) < (player / BOARD_DATA.BLUE.h_size)) || (i / BOARD_DATA.BLUE.h_size) > (player / BOARD_DATA.BLUE.h_size + 3))){
             playerPositions[i] = BOARD_DATA.BLUE.hm_pos + i;
             dbg_printf("TEST");
             return playerPositions;
-        }else if(new_position == playerPositions[i] && i >= player / BOARD_DATA.BLUE.h_size && i <= player / BOARD_DATA.BLUE.h_size + 3 && i != player){
+        }else if(new_position == playerPositions[i] && (((i / BOARD_DATA.BLUE.h_size) >= (player / BOARD_DATA.BLUE.h_size)) && ((i / BOARD_DATA.BLUE.h_size) <= (player / BOARD_DATA.BLUE.h_size + 3)) && i != player)){
             playerPositions[player] = old_position; // dont move
-            dbg_printf("TEST");
             return playerPositions;
         }else{
             playerPositions[player] = new_position;
@@ -154,7 +153,6 @@ void draw(int playerPositions[], int toClear){
     if(!is_occupied(toClear, playerPositions)){
         redraw_field(toClear);
     }
-    dbg_printf("%d\n", playerPositions[5]);
 }
 
 int main(){
@@ -180,11 +178,11 @@ int main(){
 
     toClear = playerPositions[4];
     *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 6);
-    *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 2);
+    *playerPositions = *move_player(playerPositions, RED, 4, playerPositions[4], 8);
     draw(playerPositions, toClear);
     toClear = playerPositions[5];
     *playerPositions = *move_player(playerPositions, RED, 5, playerPositions[5], 6);
-    *playerPositions = *move_player(playerPositions, RED, 5, playerPositions[5], 10);
+    *playerPositions = *move_player(playerPositions, RED, 5, playerPositions[5], 14);
     draw(playerPositions, toClear);
 
     //Main Loop
@@ -192,9 +190,9 @@ int main(){
         //Testing the move_n_fields() function
         for(int i = 0; i < 7 && kb_Data[6] != kb_Clear; i++){
 
-            /*toClear = playerPositions[player];
+            toClear = playerPositions[player];
             *playerPositions = *move_player(playerPositions, BLUE, player, playerPositions[player], 6);
-            draw(playerPositions, toClear);*/
+            draw(playerPositions, toClear);
             gfx_SwapDraw();
             
             msleep(500);

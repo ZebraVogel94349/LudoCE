@@ -28,7 +28,6 @@ const int BOARD[72][3] = {{LEFT_MARGIN + 126, TOP_MARGIN, BLUE}, {LEFT_MARGIN + 
 const struct{
     struct{
         int h_offset = 39;
-        int h_size = 4;
         int h_start = 40;
         int startPoint = 0;
         int hm_pos = 56;
@@ -37,7 +36,6 @@ const struct{
 
     struct {
         int h_offset = 9;
-        int h_size = 4;
         int h_start = 44;
         int startPoint = 10;
         int hm_pos = 60;
@@ -46,7 +44,6 @@ const struct{
 
     struct{
         int h_offset = 19;
-        int h_size = 4;
         int h_start = 48;
         int startPoint = 20;
         int hm_pos = 64;
@@ -55,7 +52,6 @@ const struct{
 
     struct{
         int h_offset = 29;
-        int h_size = 4;
         int h_start = 52;
         int startPoint = 30;
         int hm_pos = 68;
@@ -65,4 +61,5 @@ const struct{
     int player_count = 16;
     int end_of_board = 39;
     int end_of_home = 15;
+    int h_size = 4;
 } BOARD_DATA;

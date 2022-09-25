@@ -170,8 +170,9 @@ void draw(int playerPositions[], int toClear, int color, int number){
 }
 
 int *move_enemy(int playerPositions[], int piece_color, int n){
-    int hm_pos, playerNumberStart, occupyingPlayer, startPoint;
+    int hm_pos, playerNumberStart, occupyingPlayer, startPoint, movable;
     bool allOut = true;
+    movable = -1;
     if(piece_color == BLUE){
         hm_pos = BOARD_DATA.BLUE.hm_pos;
         playerNumberStart = BOARD_DATA.BLUE.playerNumberStart;
@@ -227,13 +228,21 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
             return playerPositions;
         }
     }
+    
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA.h_size; i++){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] < hm_pos && occupyingPlayer == -1 && (rand() % 4 != 0 || i == playerNumberStart - 1) && move_n_fields(piece_color, playerPositions[i], n) != playerPositions[i]){
-            playerPositions[16] = playerPositions[i];
-            playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//move player to empty field
-            return playerPositions;
+        if(playerPositions[i] < hm_pos && occupyingPlayer == -1 && move_n_fields(piece_color, playerPositions[i], n) != playerPositions[i]){
+            movable = i;
+            if(rand() % 2 != 0){
+                playerPositions[16] = playerPositions[i];
+                playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//move player to empty field
+                return playerPositions;
+            }   
         }
+    }
+    if(movable != -1){//move a movable player, if not done before
+        playerPositions[16] = playerPositions[movable];
+        playerPositions = move_player(playerPositions, piece_color, movable, playerPositions[movable], n);//move player to empty field
     }
     return playerPositions;
 }
@@ -263,7 +272,8 @@ int main(){
         //Testing the move_enemy() function
         for(int i = 2; i < 6 && kb_Data[6] != kb_Clear; i++){
             r = rand() % 6 + 1;
-            *playerPositions = *move_enemy(playerPositions, i, r);
+            r = 6;
+            *playerPositions = *move_enemy(playerPositions, RED, r);
             toClear = playerPositions[16];
             draw(playerPositions, toClear, i, r);
             if(r == 6){i--;}

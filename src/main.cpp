@@ -133,23 +133,70 @@ int get_color(int playerNumber){
     }
 }
 
-int *move_player(int playerPositions[], int piece_color, int player, int old_position, int n){
+int *throw_out(int playerPositions[], int piece_color, int player, int old_position, int n){
     int new_position = move_n_fields(piece_color, old_position, n);
     int occupyingPlayer = occupied_by(new_position, playerPositions);
-    if(occupyingPlayer == -1){
-        playerPositions[player] = new_position;
-        return playerPositions;
+    
+    playerPositions[occupyingPlayer] = BOARD_DATA.BLUE.hm_pos + occupyingPlayer;
+    playerPositions[player] = new_position;
+    return playerPositions;
+}
+
+int check_for_order(int playerPositions[], int piece_color){
+    int h_start, playerNumberStart;
+    bool is_player = true;
+    int fields = 0;
+    if(piece_color == BLUE){
+        h_start = BOARD_DATA.BLUE.h_start;
+        playerNumberStart = BOARD_DATA.BLUE.playerNumberStart;
     }
-    else if(new_position == playerPositions[occupyingPlayer] && (get_color(player) != get_color(occupyingPlayer))){//throw out
-        playerPositions[occupyingPlayer] = BOARD_DATA.BLUE.hm_pos + occupyingPlayer;
-        playerPositions[player] = new_position;
-        return playerPositions;
-    }    
+    else if(piece_color == RED){
+        h_start = BOARD_DATA.RED.h_start;
+        playerNumberStart = BOARD_DATA.RED.playerNumberStart;
+    }
+    else if(piece_color == YELLOW){
+        h_start = BOARD_DATA.YELLOW.h_start;
+        playerNumberStart = BOARD_DATA.YELLOW.playerNumberStart;
+    }
     else{
-        return playerPositions;//don't move if field is occupied by own player
+        h_start = BOARD_DATA.GREEN.h_start;
+        playerNumberStart = BOARD_DATA.GREEN.playerNumberStart;
     }
-    
-    
+
+    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA.h_size; i++){
+        if(playerPositions[i] < h_start){//if player on the field
+            return false;
+        }
+        else if(playerPositions[i] >= BOARD_DATA.BLUE.hm_pos){//one more player in home
+            fields++;
+        }
+    }
+    if(fields == 4){//if all player in home
+        return true;
+    }
+    else{
+        fields = 0;//otherwise reset fields
+    }
+
+    for(int j = 1; j < BOARD_DATA.h_size; j++){
+        for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA.h_size; i++){
+            if(playerPositions[i] == h_start + BOARD_DATA.h_size - j){
+                is_player = true;
+                fields++;
+                break;
+            }
+            else{
+                is_player = false;
+            }
+        }
+        if(!is_player && fields == 0){//no player on the last house field
+            return false;
+        }
+        else if(is_player && fields != j){//no order
+            return false;
+        }
+    }
+    return true;
 }
 
 void draw(int playerPositions[], int toClear, int color, int number){
@@ -184,7 +231,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         startPoint = BOARD_DATA.RED.startPoint;
     }
     else if(piece_color == YELLOW){
-        hm_pos = BOARD_DATA.RED.hm_pos;
+        hm_pos = BOARD_DATA.YELLOW.hm_pos;
         playerNumberStart = BOARD_DATA.YELLOW.playerNumberStart;
         startPoint = BOARD_DATA.YELLOW.startPoint;
     }
@@ -199,8 +246,13 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA.h_size; i++){
             if(n == 6 && playerPositions[i] >= hm_pos){
                 playerPositions[16] = playerPositions[i];
-                playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//move player out of home if you have to 
-                return playerPositions;
+                if(occupyingPlayer != -1){
+                    playerPositions = throw_out(playerPositions, piece_color, i, playerPositions[i], n);//move player out of home if you have to + throw out player
+                    return playerPositions;
+                }else{
+                    playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player out of home if you have to 
+                    return playerPositions;
+                }
             }
         }
     }
@@ -215,7 +267,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] == startPoint && (occupyingPlayer == -1 || get_color(occupyingPlayer) != piece_color) && !allOut){
             playerPositions[16] = playerPositions[i];
-            playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//move player from start point if you have to
+            playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player from start point if you have to
             return playerPositions;
         }
     }
@@ -224,7 +276,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] <= BOARD_DATA.end_of_board && move_n_fields(piece_color, playerPositions[i], n) > BOARD_DATA.end_of_board && occupyingPlayer == -1){
             playerPositions[16] = playerPositions[i];
-            playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//priorize entering the house
+            playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//priorize entering the house
             return playerPositions;
         }
     }
@@ -233,7 +285,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] < hm_pos && occupyingPlayer != -1 && get_color(occupyingPlayer) != piece_color && rand() % 10 != 0){
             playerPositions[16] = playerPositions[i];
-            playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//throw out player
+            playerPositions = throw_out(playerPositions, piece_color, i, playerPositions[i], n);//throw out player
             return playerPositions;
         }
     }
@@ -244,14 +296,14 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
             movable = i;
             if(rand() % 4 != 0){
                 playerPositions[16] = playerPositions[i];
-                playerPositions = move_player(playerPositions, piece_color, i, playerPositions[i], n);//move player to empty field
+                playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player to empty field
                 return playerPositions;
             }   
         }
     }
     if(movable != -1){//move a movable player, if not done before
         playerPositions[16] = playerPositions[movable];
-        playerPositions = move_player(playerPositions, piece_color, movable, playerPositions[movable], n);//move player to empty field
+        playerPositions[movable] = move_n_fields(piece_color, playerPositions[movable], n);//move player to empty field
     }
     return playerPositions;
 }
@@ -280,16 +332,23 @@ int main(){
     while(kb_Data[6] != kb_Clear){
         //Testing the move_enemy() function
         for(int i = 2; i < 6 && kb_Data[6] != kb_Clear; i++){
-            r = rand() % 6 + 1;
-            *playerPositions = *move_enemy(playerPositions, i, r);
-            toClear = playerPositions[16];
-            draw(playerPositions, toClear, i, r);
+            for(int again = 0; again < 3; again++){
+                r = rand() % 6 + 1;
+                *playerPositions = *move_enemy(playerPositions, i, r);
+                toClear = playerPositions[16];
+                draw(playerPositions, toClear, i, r);
+                gfx_SwapDraw();
+                
+                msleep(1000);
+                kb_Scan();
+
+                if(!check_for_order(playerPositions, i)){
+                    break;
+                }
+
+                
+            }
             if(r == 6){i--;}
-            gfx_SwapDraw();
-
-
-            msleep(2000);
-            kb_Scan();
         }
     }
     gfx_End();

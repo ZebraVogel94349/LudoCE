@@ -1,4 +1,4 @@
-unsigned char palette_gfx[14] =
+unsigned char palette_gfx[16] =
 {
     0x00, 0x00, /*   0: rgb(  0,   0,   0) */
     0xf2, 0x7b, /*   1: rgb(247, 251, 148) */
@@ -7,4 +7,5 @@ unsigned char palette_gfx[14] =
     0xe0, 0x7b, /*   4: rgb(247, 251,   0) */
     0xe0, 0x82, /*   5: rgb(  0, 190,   0) */
     0xff, 0xff, /*   6: rgb(255, 255, 255) */
+    0xe0, 0xb3, /*   7: rgb( 99, 255,   0) */
 };

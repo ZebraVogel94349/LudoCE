@@ -11,6 +11,7 @@
 #include <keypadc.h>
 #include <fileioc.h>
 #include <graphx.h>
+#include <debug.h>
 
 #include "gfx/palette_gfx.h"
 #include "gfx/colors.h"
@@ -128,8 +129,10 @@ int get_color(int playerNumber){
     else if(playerNumber >= BOARD_DATA.RED.playerNumberStart){
         return RED;
     }
-    else{
+    else if(playerNumber >= BOARD_DATA.BLUE.playerNumberStart){
         return BLUE;
+    }else{
+        return -1;
     }
 }
 
@@ -207,7 +210,7 @@ void draw(int playerPositions[], int toClear, int color, int number){
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
-        gfx_SetTextFGColor(color);
+        gfx_SetTextFGColor(BLACK);
         gfx_SetTextXY(6,6);
         gfx_PrintInt(number, 1);
     }
@@ -223,7 +226,7 @@ void draw(int playerPositions[], int toClear, int color, int number){
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
-        gfx_SetTextFGColor(color);
+        gfx_SetTextFGColor(BLACK);
         gfx_SetTextXY(6,6);
         gfx_PrintInt(number, 1);
     }
@@ -280,7 +283,6 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
         startPoint = BOARD_DATA.GREEN.startPoint;
     }
     int occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[playerNumberStart + selectedPlayer], n), playerPositions);
-
     if(get_color(occupyingPlayer) == piece_color){
         return false;
     }
@@ -290,13 +292,13 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
         }
         return false;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//need to move from startpoint
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//need to move from startpoint --> this player
         return true;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && is_someone_on_startpoint(playerPositions, playerNumberStart, startPoint)){//need to move from startpoint
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && is_someone_on_startpoint(playerPositions, playerNumberStart, startPoint) && get_color(occupied_by(move_n_fields(piece_color, startPoint, n), playerPositions)) != piece_color){//need to move from startpoint --> not this player
         return false;
     }
-    else if(move_n_fields(piece_color, playerPositions[playerNumberStart + selectedPlayer], n) != playerPositions[playerNumberStart + selectedPlayer]){//if move is even possible
+    else if(get_color(occupyingPlayer) != piece_color){//if move is even possible
         return true;
     }
     return false;
@@ -418,7 +420,7 @@ int main(){
     int toClear = 0;
     int r = 0;
     int again = 0;
-    int playerTypes[4] = {1, 1, 1, 1};
+    int playerTypes[4] = {0, 0, 0, 0};
     int selectedPlayer = 0;
     int oldSelection = 0;
     kb_key_t prevkey1 = kb_Data[1];
@@ -442,16 +444,12 @@ int main(){
     //Main Loop
     while(kb_Data[6] != kb_Clear && !check_for_win(playerPositions)){
         for(int i = 2; i < 6 && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); i++){
-            if(check_for_order(playerPositions, i)){
-                again = 3;
-            }else{
-                again = 1;
-            }
+            again = 1;
             if(playerTypes[i - 2] == 0){//if it's a real player's turn
                 r = 0;
+                draw(playerPositions, toClear, i, r);
                 for(int k = 0; k < again && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); k++){
                     while(kb_Data[6] != kb_Clear){//wait for 2nd to roll the die
-                        draw(playerPositions, toClear, i, r);
                         if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//roll the die
                             r = rand() % 6 + 1;
                             break;
@@ -460,6 +458,7 @@ int main(){
                         prevkey7 = kb_Data[7];
                         kb_Scan();
                     }
+                    draw(playerPositions, toClear, i, r);
                     prevkey1 = kb_Data[1];
                     prevkey7 = kb_Data[7];
                     kb_Scan();
@@ -521,7 +520,10 @@ int main(){
                             prevkey7 = kb_Data[7];
                             kb_Scan();
                         }
-                    }      
+                    }
+                    if(check_for_order(playerPositions, i) && again < 3){
+                        again++;
+                    }   
                 }
                 msleep(500);
             }
@@ -537,6 +539,10 @@ int main(){
                     prevkey1 = kb_Data[1];
                     prevkey7 = kb_Data[7];
                     kb_Scan();
+
+                    if(check_for_order(playerPositions, i) && again < 3){
+                        again++;
+                    }  
                 }
             }
             if(r == 6){i--;}

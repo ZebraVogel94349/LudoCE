@@ -520,6 +520,9 @@ int main(){
                             prevkey7 = kb_Data[7];
                             kb_Scan();
                         }
+                        prevkey1 = kb_Data[1];
+                        prevkey7 = kb_Data[7];
+                        kb_Scan();
                     }
                     if(check_for_order(playerPositions, i) && again < 3){
                         again++;

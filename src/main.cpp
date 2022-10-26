@@ -31,23 +31,23 @@ void draw_field(int x, int y, int r, int color){
     gfx_FillCircle_NoClip(x + 10, y + 10, r - 1);
 }
 
+void draw_field_pos(int position){
+    draw_field(BOARD[position][0], BOARD[position][1], 8, BOARD[position][2]);
+}
+
 void connect_fields(int x0, int y0, int x1, int y1){
     gfx_SetColor(BLACK);
     gfx_Line(x0 + 10, y0 + 10, x1 + 10, y1 + 10);
 }
 
 void draw_board(){
-    for(int i = 0; i < BOARD_DATA.end_of_board; i++){
+    for(int i = 0; i < BOARD_DATA.endOfBoard; i++){
         connect_fields(BOARD[i][0], BOARD[i][1], BOARD[i + 1][0], BOARD[i + 1][1]);
     }
-    connect_fields(BOARD[BOARD_DATA.end_of_board][0], BOARD[BOARD_DATA.end_of_board][1], BOARD[0][0], BOARD[0][1]);
-    for(int i = 0; i < 72; i++){
-        draw_field(BOARD[i][0], BOARD[i][1], 8, BOARD[i][2]);
+    connect_fields(BOARD[BOARD_DATA.endOfBoard][0], BOARD[BOARD_DATA.endOfBoard][1], BOARD[0][0], BOARD[0][1]);
+    for(int i = 0; i < BOARD_DATA.boardSize; i++){
+        draw_field_pos(i);
     }
-}
-
-void redraw_field(int position){
-    draw_field(BOARD[position][0], BOARD[position][1], 8, BOARD[position][2]);
 }
 
 void draw_player(int playerPositions[], int start, int end){
@@ -57,7 +57,7 @@ void draw_player(int playerPositions[], int start, int end){
 }
 
 int occupied_by(int position, int playerPositions[]){
-    for(int i = 0; i < BOARD_DATA.player_count; i++){
+    for(int i = 0; i < BOARD_DATA.playerCount; i++){
         if(playerPositions[i] == position){
             return i;
         }
@@ -90,7 +90,7 @@ int move_n_fields(int piece_color, int position, int n){
             h_start = BOARD_DATA.GREEN.h_start;
             break;
     }
-    if(position >= 56 && n == 6){//move out of home
+    if(position > BOARD_DATA.endOfBoard + BOARD_DATA.playerCount && n == 6){//move out of home
         return startPoint;
     }
     else if(position <= h_offset && position + n > h_offset && position + n <= h_offset + BOARD_DATA.h_size){//move into house
@@ -103,19 +103,19 @@ int move_n_fields(int piece_color, int position, int n){
     else if((position >= h_start && position + n < h_start + BOARD_DATA.h_size)){//move inside house
         return position + n;
     }
-    else if(position + n <= BOARD_DATA.end_of_board){//move normally
+    else if(position + n <= BOARD_DATA.endOfBoard){//move normally
         return position + n;
     }
-    else if(position <= BOARD_DATA.end_of_board){//go from end of board to 0
-        return position + n - (BOARD_DATA.end_of_board + 1);
+    else if(position <= BOARD_DATA.endOfBoard){//go from end of board to 0
+        return position + n - (BOARD_DATA.endOfBoard + 1);
     }
     else{
         return position;
     }
 }
 
-int *throw_out(int playerPositions[], int piece_color, int player, int old_position, int n){
-    int new_position = move_n_fields(piece_color, old_position, n);
+int *throw_out(int playerPositions[], int player, int old_position, int n){
+    int new_position = move_n_fields(get_color(player), old_position, n);
     int occupyingPlayer = occupied_by(new_position, playerPositions);
     
     playerPositions[occupyingPlayer] = BOARD_DATA.BLUE.hm_pos + occupyingPlayer;
@@ -180,11 +180,11 @@ int check_for_order(int playerPositions[], int piece_color){
     return true;
 }
 
-void draw(int playerPositions[], int toClear, int color, int number){
+void draw_everything(int playerPositions[], int toClear, int color, int number){
     if(occupied_by(toClear, playerPositions) == -1){
-        redraw_field(toClear);
+        draw_field_pos(toClear);
     }
-    draw_player(playerPositions, 0, BOARD_DATA.player_count);
+    draw_player(playerPositions, 0, BOARD_DATA.playerCount);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
@@ -193,14 +193,13 @@ void draw(int playerPositions[], int toClear, int color, int number){
         gfx_PrintInt(number, 1);
     }
     
-    
     gfx_SwapDraw();
 
     if(occupied_by(toClear, playerPositions) == -1){
-        redraw_field(toClear);
+        draw_field_pos(toClear);
     }
-    draw_player(playerPositions, 0, BOARD_DATA.player_count);
-    redraw_field(toClear);
+    draw_player(playerPositions, 0, BOARD_DATA.playerCount);
+    draw_field_pos(toClear);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
@@ -211,12 +210,12 @@ void draw(int playerPositions[], int toClear, int color, int number){
 }
 
 void draw_player_selection(int *playerPositions, int selectedPlayer, int oldSelection){
-    redraw_field(playerPositions[oldSelection]);
+    draw_field_pos(playerPositions[oldSelection]);
     draw_field(BOARD[playerPositions[selectedPlayer]][0], BOARD[playerPositions[selectedPlayer]][1], 7, BLACK);
 }
 
 void draw_potential_field(int selectedField, int oldField){
-    redraw_field(oldField);
+    draw_field_pos(oldField);
     draw_field(BOARD[selectedField][0], BOARD[selectedField][1], 8, LIGHT_GREEN);
 }
 
@@ -288,7 +287,7 @@ int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int
 
     playerPositions[16] = playerPositions[player];
     if(occupyingPlayer != -1){//if someone to throw out
-        playerPositions = throw_out(playerPositions, piece_color, player, playerPositions[player], n);//throw out player
+        playerPositions = throw_out(playerPositions, player, playerPositions[player], n);//throw out player
         return playerPositions;
     }else{
         playerPositions[player] = move_n_fields(piece_color, playerPositions[player], n);//move player to empty field
@@ -326,7 +325,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
             if(n == 6 && playerPositions[i] >= hm_pos){
                 playerPositions[16] = playerPositions[i];//store the old position of the player in playerPositions[16]
                 if(occupyingPlayer != -1){
-                    playerPositions = throw_out(playerPositions, piece_color, i, playerPositions[i], n);//move player out of home if you have to + throw out player
+                    playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//move player out of home if you have to + throw out player
                     return playerPositions;
                 }else{
                     playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player out of home if you have to 
@@ -347,7 +346,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
 
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA.h_size; i++){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] <= BOARD_DATA.end_of_board && move_n_fields(piece_color, playerPositions[i], n) > BOARD_DATA.end_of_board && occupyingPlayer == -1){
+        if(playerPositions[i] <= BOARD_DATA.endOfBoard && move_n_fields(piece_color, playerPositions[i], n) > BOARD_DATA.endOfBoard && occupyingPlayer == -1){
             playerPositions[16] = playerPositions[i];
             playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//priorize entering the house
             return playerPositions;
@@ -358,7 +357,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] < hm_pos && occupyingPlayer != -1 && get_color(occupyingPlayer) != piece_color && rand() % 10 != 0){
             playerPositions[16] = playerPositions[i];
-            playerPositions = throw_out(playerPositions, piece_color, i, playerPositions[i], n);//throw out player
+            playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//throw out player
             return playerPositions;
         }
     }
@@ -411,13 +410,13 @@ int main(){
 
     gfx_FillScreen(BACKGROUND_YELLOW);
     draw_board();
-    draw_player(playerPositions, 0, BOARD_DATA.player_count);
+    draw_player(playerPositions, 0, BOARD_DATA.playerCount);
+    
     gfx_SwapDraw();
-
 
     gfx_FillScreen(BACKGROUND_YELLOW);
     draw_board();
-    draw_player(playerPositions, 0, BOARD_DATA.player_count);
+    draw_player(playerPositions, 0, BOARD_DATA.playerCount);
 
     //Main Loop
     while(kb_Data[6] != kb_Clear && !check_for_win(playerPositions)){
@@ -425,7 +424,7 @@ int main(){
             again = 1;
             if(playerTypes[i - 2] == 0){//if it's a real player's turn
                 r = 0;
-                draw(playerPositions, toClear, i, r);
+                draw_everything(playerPositions, toClear, i, r);
                 for(int k = 0; k < again && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); k++){
                     while(kb_Data[6] != kb_Clear){//wait for 2nd to roll the die
                         if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//roll the die
@@ -436,7 +435,7 @@ int main(){
                         prevkey7 = kb_Data[7];
                         kb_Scan();
                     }
-                    draw(playerPositions, toClear, i, r);
+                    draw_everything(playerPositions, toClear, i, r);
                     prevkey1 = kb_Data[1];
                     prevkey7 = kb_Data[7];
                     kb_Scan();
@@ -451,17 +450,17 @@ int main(){
                     if(selectedPlayer != -1){
                         while(kb_Data[6] != kb_Clear){//wait for 2nd to move the player
                             // draw selections
-                            draw(playerPositions, toClear, i, r);
+                            draw_everything(playerPositions, toClear, i, r);
                             draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA.h_size + selectedPlayer], r), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA.h_size + oldSelection], r));
                             draw_player_selection(playerPositions, (i - 2) * BOARD_DATA.h_size + selectedPlayer, (i - 2) * BOARD_DATA.h_size + oldSelection);
                             
                             if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
                                 *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
                                 toClear = playerPositions[16];
-                                redraw_field(playerPositions[(i - 2) * BOARD_DATA.h_size + selectedPlayer]);
+                                draw_field_pos(playerPositions[(i - 2) * BOARD_DATA.h_size + selectedPlayer]);
                                 gfx_SwapDraw();
-                                redraw_field(playerPositions[(i - 2) * BOARD_DATA.h_size + selectedPlayer]);
-                                draw(playerPositions, toClear, i, r);
+                                draw_field_pos(playerPositions[(i - 2) * BOARD_DATA.h_size + selectedPlayer]);
+                                draw_everything(playerPositions, toClear, i, r);
                                 break;
                             }
                             
@@ -513,7 +512,7 @@ int main(){
                     r = rand() % 6 + 1;
                     *playerPositions = *move_enemy(playerPositions, i, r);
                     toClear = playerPositions[16];
-                    draw(playerPositions, toClear, i, r);
+                    draw_everything(playerPositions, toClear, i, r);
                     
                     msleep(500);
 
@@ -530,5 +529,4 @@ int main(){
         }
     }
     gfx_End();
-    
 }

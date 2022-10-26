@@ -58,8 +58,8 @@ const struct{
         int playerNumberStart = 12;
     } GREEN;
     
-    int player_count = 16;
-    int end_of_board = 39;
-    int end_of_home = 15;
+    int playerCount = 16;
+    int endOfBoard = 39;
     int h_size = 4;
+    int boardSize = 72;
 } BOARD_DATA;

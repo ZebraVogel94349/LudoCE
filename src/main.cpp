@@ -7,6 +7,22 @@
 #include "gfx/colors.h"
 #include "const.h"
 
+int get_color(int playerNumber){
+    if(playerNumber >= BOARD_DATA.GREEN.playerNumberStart){
+        return GREEN;
+    }
+    else if(playerNumber >= BOARD_DATA.YELLOW.playerNumberStart){
+        return YELLOW;
+    }
+    else if(playerNumber >= BOARD_DATA.RED.playerNumberStart){
+        return RED;
+    }
+    else if(playerNumber >= BOARD_DATA.BLUE.playerNumberStart){
+        return BLUE;
+    }else{
+        return -1;
+    }
+}
 
 void draw_field(int x, int y, int r, int color){
     gfx_SetColor(BLACK);
@@ -36,18 +52,7 @@ void redraw_field(int position){
 
 void draw_player(int playerPositions[], int start, int end){
     for(int i = start; i < end; i++){
-        if(i >= BOARD_DATA.GREEN.playerNumberStart){
-            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, GREEN);
-        }
-        else if(i >= BOARD_DATA.YELLOW.playerNumberStart){
-            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, YELLOW);
-        }
-        else if(i >= BOARD_DATA.RED.playerNumberStart){
-            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, RED);
-        }
-        else{
-            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, BLUE);
-        }
+        draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, get_color(i));
     }
 }
 
@@ -106,23 +111,6 @@ int move_n_fields(int piece_color, int position, int n){
     }
     else{
         return position;
-    }
-}
-
-int get_color(int playerNumber){
-    if(playerNumber >= BOARD_DATA.GREEN.playerNumberStart){
-        return GREEN;
-    }
-    else if(playerNumber >= BOARD_DATA.YELLOW.playerNumberStart){
-        return YELLOW;
-    }
-    else if(playerNumber >= BOARD_DATA.RED.playerNumberStart){
-        return RED;
-    }
-    else if(playerNumber >= BOARD_DATA.BLUE.playerNumberStart){
-        return BLUE;
-    }else{
-        return -1;
     }
 }
 

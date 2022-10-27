@@ -8,18 +8,10 @@
 #include "const.h"
 
 int get_color(int playerNumber){
-    if(playerNumber >= BOARD_COLOR_DATA[3][4]){
-        return GREEN;
+    if(playerNumber >= 0 && playerNumber < BOARD_DATA[0]){
+        return playerNumber / BOARD_DATA[2] + 2;
     }
-    else if(playerNumber >= BOARD_COLOR_DATA[2][4]){
-        return YELLOW;
-    }
-    else if(playerNumber >= BOARD_COLOR_DATA[1][4]){
-        return RED;
-    }
-    else if(playerNumber >= BOARD_COLOR_DATA[0][4]){
-        return BLUE;
-    }else{
+    else{
         return -1;
     }
 }
@@ -120,7 +112,7 @@ int check_for_order(int playerPositions[], int piece_color){
             fields++;
         }
     }
-    if(fields == 4){//if all players in home
+    if(fields == BOARD_DATA[2]){//if all players in home
         return true;
     }
     else{
@@ -238,7 +230,7 @@ int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int
     int player = (piece_color - 2) * BOARD_DATA[2] + selectedPlayer;
     int occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[player], n), playerPositions);
 
-    playerPositions[16] = playerPositions[player];
+    playerPositions[BOARD_DATA[0]] = playerPositions[player];
     if(occupyingPlayer != -1){//if someone to throw out
         playerPositions = throw_out(playerPositions, player, playerPositions[player], n);//throw out player
         return playerPositions;
@@ -260,7 +252,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     if(occupyingPlayer == -1 || get_color(occupyingPlayer) != piece_color){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
             if(n == 6 && playerPositions[i] >= hm_pos){
-                playerPositions[16] = playerPositions[i];//store the old position of the player in playerPositions[16]
+                playerPositions[BOARD_DATA[0]] = playerPositions[i];//store the old position of the player in the last value of playerPositions[]
                 if(occupyingPlayer != -1){
                     playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//move player out of home if you have to + throw out player
                     return playerPositions;
@@ -275,7 +267,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] == startPoint && (occupyingPlayer == -1 || get_color(occupyingPlayer) != piece_color) && !all_out(playerPositions, playerNumberStart, hm_pos)){
-            playerPositions[16] = playerPositions[i];
+            playerPositions[BOARD_DATA[0]] = playerPositions[i];
             playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player from start point if you have to
             return playerPositions;
         }
@@ -284,7 +276,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] <= BOARD_DATA[1] && move_n_fields(piece_color, playerPositions[i], n) > BOARD_DATA[1] && occupyingPlayer == -1){
-            playerPositions[16] = playerPositions[i];
+            playerPositions[BOARD_DATA[0]] = playerPositions[i];
             playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//priorize entering the house
             return playerPositions;
         }
@@ -293,7 +285,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
         occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
         if(playerPositions[i] < hm_pos && occupyingPlayer != -1 && get_color(occupyingPlayer) != piece_color && rand() % 10 != 0){
-            playerPositions[16] = playerPositions[i];
+            playerPositions[BOARD_DATA[0]] = playerPositions[i];
             playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//throw out player
             return playerPositions;
         }
@@ -304,25 +296,30 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
         if(playerPositions[i] < hm_pos && occupyingPlayer == -1 && move_n_fields(piece_color, playerPositions[i], n) != playerPositions[i]){
             movable = i;
             if(rand() % 4 != 0){
-                playerPositions[16] = playerPositions[i];
+                playerPositions[BOARD_DATA[0]] = playerPositions[i];
                 playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player to empty field
                 return playerPositions;
             }   
         }
     }
     if(movable != -1){//move a movable player, if not done before
-        playerPositions[16] = playerPositions[movable];
+        playerPositions[BOARD_DATA[0]] = playerPositions[movable];
         playerPositions[movable] = move_n_fields(piece_color, playerPositions[movable], n);//move player to empty field
     }
     return playerPositions;
 }
 
 bool check_for_win(int playerPositions[]){
-    for(int i = 0; i < BOARD_DATA[2]; i++){
-        if((playerPositions[i * BOARD_DATA[2]] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2]] <= BOARD_DATA[1] + BOARD_DATA[0]) 
-        && (playerPositions[i * BOARD_DATA[2] + 1] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + 1] <= BOARD_DATA[1] + BOARD_DATA[0]) 
-        && (playerPositions[i * BOARD_DATA[2] + 2] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + 2] <= BOARD_DATA[1] + BOARD_DATA[0]) 
-        && (playerPositions[i * BOARD_DATA[2] + 3] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + 3] <= BOARD_DATA[1] + BOARD_DATA[0])){
+    bool noWin;
+    for(int i = 0; i < BOARD_DATA[4]; i++){
+        for(int j = 0; j < BOARD_DATA[2]; j++){
+            noWin = false;
+            if(!(playerPositions[i * BOARD_DATA[2] + j] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + j] <= BOARD_DATA[1] + BOARD_DATA[0])){
+                noWin = true;
+                break;
+            }
+        }
+        if(!noWin){
             return true;
         }
     }

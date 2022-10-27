@@ -33,5 +33,5 @@ const int BOARD_COLOR_DATA[4][5]{
     {29, 52, 30, 68, 12}//GREEN
 };
 
-//playerCount, endOfBoard, h_size, boardSize
-const int BOARD_DATA[4]{16, 39, 4, 72};
+//playerCount, endOfBoard, h_size, boardSize, colorCount
+const int BOARD_DATA[5]{16, 39, 4, 72, 4};

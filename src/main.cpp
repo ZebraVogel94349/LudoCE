@@ -354,7 +354,7 @@ int main(){
 
     //Main Loop
     while(kb_Data[6] != kb_Clear && !check_for_win(playerPositions)){
-        for(int i = 2; i < 6 && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); i++){
+        for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); i++){
             again = 1;
             if(playerTypes[i - 2] == 0){//if it's a real player's turn
                 r = 0;
@@ -390,7 +390,7 @@ int main(){
                             
                             if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
                                 *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
-                                toClear = playerPositions[16];
+                                toClear = playerPositions[BOARD_DATA[0]];
                                 draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                 gfx_SwapDraw();
                                 draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
@@ -441,11 +441,11 @@ int main(){
                 }
                 msleep(500);
             }
-            else{
+            else if(playerTypes[i - 2] == 1){
                 for(int k = 0; k < again && kb_Data[6] != kb_Clear && !check_for_win(playerPositions); k++){
                     r = rand() % 6 + 1;
                     *playerPositions = *move_enemy(playerPositions, i, r);
-                    toClear = playerPositions[16];
+                    toClear = playerPositions[BOARD_DATA[0]];
                     draw_everything(playerPositions, toClear, i, r);
                     
                     msleep(500);

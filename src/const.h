@@ -25,41 +25,13 @@ const int BOARD[72][3] = {{LEFT_MARGIN + 126, TOP_MARGIN, BLUE}, {LEFT_MARGIN + 
                         {LEFT_MARGIN, TOP_MARGIN, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN, GREEN}, {LEFT_MARGIN, TOP_MARGIN + 21, GREEN}, {LEFT_MARGIN + 21, TOP_MARGIN + 21, GREEN}
                         };
 
-const struct{
-    struct{
-        int h_offset = 39;
-        int h_start = 40;
-        int startPoint = 0;
-        int hm_pos = 56;
-        int playerNumberStart = 0;
-    } BLUE;
+//h_offset, h_start, startPoint, hm_pos and playerNumberStart for each color
+const int BOARD_COLOR_DATA[4][5]{
+    {39, 40, 0, 56, 0},//BLUE
+    {9, 44, 10, 60, 4},//RED
+    {19, 48, 20, 64, 8},//YELLOW
+    {29, 52, 30, 68, 12}//GREEN
+};
 
-    struct {
-        int h_offset = 9;
-        int h_start = 44;
-        int startPoint = 10;
-        int hm_pos = 60;
-        int playerNumberStart = 4;
-    } RED;
-
-    struct{
-        int h_offset = 19;
-        int h_start = 48;
-        int startPoint = 20;
-        int hm_pos = 64;
-        int playerNumberStart = 8;
-    } YELLOW;
-
-    struct{
-        int h_offset = 29;
-        int h_start = 52;
-        int startPoint = 30;
-        int hm_pos = 68;
-        int playerNumberStart = 12;
-    } GREEN;
-    
-    int playerCount = 16;
-    int endOfBoard = 39;
-    int h_size = 4;
-    int boardSize = 72;
-} BOARD_DATA;
+//playerCount, endOfBoard, h_size, boardSize
+const int BOARD_DATA[4]{16, 39, 4, 72};

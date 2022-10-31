@@ -6,3 +6,5 @@ const int YELLOW = 4;
 const int GREEN = 5;
 const int WHITE = 6;
 const int LIGHT_GREEN = 7;
+const int GREY = 8;
+const int ORANGE = 9;

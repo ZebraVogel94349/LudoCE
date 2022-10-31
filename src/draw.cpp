@@ -36,7 +36,7 @@ void draw_player(int playerPositions[], int start, int end){
     }
 }
 
-void draw_everything(int playerPositions[], int toClear, int color, int number){
+void draw_everything(int playerPositions[], int toClear, int number){
     if(occupied_by(toClear, playerPositions) == -1){
         draw_field_pos(toClear);
     }

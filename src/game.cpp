@@ -115,15 +115,6 @@ bool all_out(int playerPositions[], int playerNumberStart, int hm_pos){
     return true;
 }
 
-bool is_someone_on_startpoint(int playerPositions[], int playerNumberStart, int startPoint){
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        if(playerPositions[i] == startPoint){
-            return true;
-        }
-    }
-    return false;
-}
-
 bool is_player_movable(int playerPositions[], int piece_color, int selectedPlayer, int n){
     int hm_pos, playerNumberStart, startPoint;
     
@@ -135,7 +126,7 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
     if(get_color(occupyingPlayer) == piece_color){
         return false;
     }
-    else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos) && !is_someone_on_startpoint(playerPositions, playerNumberStart, startPoint)){//need to move out of house
+    else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos) && piece_color != get_color(occupyingPlayer)){;//need to move out of house
         if(playerPositions[playerNumberStart + selectedPlayer] >= hm_pos){
             return true;
         }
@@ -144,7 +135,7 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
     else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//need to move from startpoint --> this player
         return true;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && is_someone_on_startpoint(playerPositions, playerNumberStart, startPoint) && get_color(occupied_by(move_n_fields(piece_color, startPoint, n), playerPositions)) != piece_color){//need to move from startpoint --> not this player
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && piece_color == get_color(occupyingPlayer) && get_color(occupied_by(move_n_fields(piece_color, startPoint, n), playerPositions)) != piece_color){//need to move from startpoint --> not this player
         return false;
     }
     else if(get_color(occupyingPlayer) != piece_color){//if move is even possible
@@ -236,19 +227,16 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     return playerPositions;
 }
 
-bool check_for_win(int playerPositions[]){
-    bool noWin;
+int check_for_win(int playerPositions[]){
     for(int i = 0; i < BOARD_DATA[4]; i++){
         for(int j = 0; j < BOARD_DATA[2]; j++){
-            noWin = false;
             if(!(playerPositions[i * BOARD_DATA[2] + j] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + j] <= BOARD_DATA[1] + BOARD_DATA[0])){
-                noWin = true;
                 break;
             }
-        }
-        if(!noWin){
-            return true;
+            if(j == BOARD_DATA[2] - 1){
+                return j + 2;
+            }
         }
     }
-    return false;
+    return 0;
 }

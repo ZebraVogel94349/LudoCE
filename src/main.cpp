@@ -16,7 +16,7 @@ int main(){
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0);
     gfx_SetDrawBuffer();
 
-    int mainMenuEntryTypes[6] = {0, 2, 1, 1, 1, 1}; // 0 = text, 1 = enabled, 2 = not enabled
+    int mainMenuEntryTypes[5] = {0, 1, 1, 1, 1}; // 0 = disabled, 1 = enabled
     
     while(true){
         int status = 0;
@@ -32,7 +32,7 @@ int main(){
         kb_key_t prevkey1 = kb_Data[1];
         kb_key_t prevkey7 = kb_Data[7];
         int keycount = 0;
-        int selectedEntry = 2;
+        int selectedEntry = 1;
         //Main Menu
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
@@ -40,21 +40,21 @@ int main(){
         if(status == 0){
             while(kb_Data[6] != kb_Clear){
                 if(kb_Data[7] == kb_Up && (prevkey7 != kb_Up || keycount % 10 == 9)){
-                    if(selectedEntry == 1){
-                        selectedEntry = 5;
-                    }else if(selectedEntry == 2 && mainMenuEntryTypes[1] == 2){
-                        selectedEntry = 5;
+                    if(selectedEntry == 0){
+                        selectedEntry = 4;
+                    }else if(selectedEntry == 1 && mainMenuEntryTypes[0] == 0){
+                        selectedEntry = 4;
                     }
                     else{
                         selectedEntry--;
                     }
                 }
                 if(kb_Data[7] == kb_Down && (prevkey7 != kb_Down || keycount % 10 == 9)){
-                    if(selectedEntry == 5){
-                        if(mainMenuEntryTypes[1] == 2){
-                            selectedEntry = 2;
-                        }else{
+                    if(selectedEntry == 4){
+                        if(mainMenuEntryTypes[0] == 0){
                             selectedEntry = 1;
+                        }else{
+                            selectedEntry = 0;
                         }
                     }
                     else{
@@ -62,18 +62,7 @@ int main(){
                     }
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
-                    if(selectedEntry == 1){ // load game
-                        // code for loading game
-                    }
-                    else if(selectedEntry == 2){ //start new game
-                        status = 1;
-                    }
-                    else if(selectedEntry == 4){ //open credits
-                        status = 2;
-                    }
-                    else if(selectedEntry == 5){ //exit
-                        status = 4;
-                    }
+                    status = selectedEntry;
                     break;
                 }
                 draw_main_menu(selectedEntry, mainMenuEntryTypes);
@@ -150,7 +139,7 @@ int main(){
                         }
                         //apply bot strength here//
 
-                        status = 3;
+                        status = 6;
                     }
                 }
                 draw_new_game_menu(selectedEntry, newGameValues);
@@ -168,7 +157,7 @@ int main(){
             prevkey1 = kb_Data[1];
         }
 
-        if(status == 3){
+        if(status == 6){
             gfx_FillScreen(BACKGROUND_YELLOW);
             draw_board();
             draw_player(playerPositions, 0, BOARD_DATA[0]);
@@ -280,10 +269,10 @@ int main(){
             }
             status = 0;
         }
-        if(status == 2){
+        if(status == 3){
             gfx_FillScreen(BACKGROUND_YELLOW);
             draw_credits();
-            while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del && status == 2){
+            while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del && status == 3){
                 prevkey1 = kb_Data[1];
                 kb_Scan();
             }

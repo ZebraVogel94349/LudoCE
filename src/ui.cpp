@@ -19,7 +19,7 @@ void draw_button(int x, int y, const char *label, bool enabled, bool selected){
     gfx_PrintStringXY(label, x - width / 2, y + 6);
 }
 
-void draw_selection_button(int x, int y, const char* label, const int number, const char *text, bool enabled, bool selected){
+void draw_selection_button(int x, int y, const char* label, const int number, const char *text, bool selected){
     int width = gfx_GetStringWidth("0");
     if(number != -1){
         gfx_SetTextXY(x - width / 2, y);
@@ -38,47 +38,28 @@ void draw_selection_button(int x, int y, const char* label, const int number, co
 }
 
 void draw_main_menu(int selectedButton, int *mainMenuEntryTypes){
-    const char* mainMenuEntries[6] = {"LudoCE 0.0.1", "Load Game", "New Game", "Settings", "Credits", "Exit"};
-    const int mainMenuEntryPos[6][2] = {{160, 20}, {160, 40}, {160, 70}, {160, 100}, {160, 130}, {160, 160}};
-
+    const char* mainMenuEntries[5] = {"Load Game", "New Game", "Settings", "Credits", "Exit"};
+    const int mainMenuEntryPos[5][2] = {{160, 40}, {160, 70}, {160, 100}, {160, 130}, {160, 160}};
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(120, 40, 80, 140);
-    for(int i = 0; i < 6; i++){
-        if(mainMenuEntryTypes[i] == 0){
-            gfx_PrintStringXY(mainMenuEntries[i], mainMenuEntryPos[i][0] - gfx_GetStringWidth(mainMenuEntries[i]) / 2, mainMenuEntryPos[i][1] - 15);
-        }
-        else if(mainMenuEntryTypes[i] == 1){
-            draw_button(mainMenuEntryPos[i][0], mainMenuEntryPos[i][1], mainMenuEntries[i], true, selectedButton == i);
-        }
-        else if(mainMenuEntryTypes[i] == 2){
-            draw_button(mainMenuEntryPos[i][0], mainMenuEntryPos[i][1], mainMenuEntries[i], false, selectedButton == i);
-        }
+    gfx_PrintStringXY("LudoCE 0.0.1", 160 - gfx_GetStringWidth("LudoCE 0.0.1") / 2, 5);
+    for(int i = 0; i < 5; i++){
+        draw_button(mainMenuEntryPos[i][0], mainMenuEntryPos[i][1], mainMenuEntries[i], mainMenuEntryTypes[i] == 1, selectedButton == i);
     }
     gfx_SwapDraw();
 }
 
 void draw_new_game_menu(int selectedButton, int *newGameValues){
-    const char* newGameEntries[7] = {"Board", "Player", "Bots", "Figure Count", "Bot Strength", "Colors", "Start"};
     const char* botStrengthValues[3] = {"Easy", "Normal", "Hard"};
-    const int newGameEntryPos[7][2] = {{160, 20}, {128, 70}, {192, 70}, {108, 120}, {212, 120}, {160, 170}, {160, 200}};
-    const int newGameEntryTypes[7] = {0, 0, 0, 0, 0, 1, 1}; // 0 = selection button, 1 = button
-
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(0, 0, 320, 240);
-    for(int i = 0; i < sizeof(newGameEntries); i++){
-        if(i == 0){
-            draw_selection_button(newGameEntryPos[i][0], newGameEntryPos[i][1] + 20, newGameEntries[i], newGameValues[i], "", true, selectedButton == i + 1);
-        }
-        else if(newGameEntryTypes[i] == 0 && i < 4){
-            draw_selection_button(newGameEntryPos[i][0], newGameEntryPos[i][1] + 20, newGameEntries[i], newGameValues[i], "", true, selectedButton == i + 1);
-        }
-        else if(i == 4){
-            draw_selection_button(newGameEntryPos[i][0], newGameEntryPos[i][1] + 20, newGameEntries[i], -1, botStrengthValues[newGameValues[4] - 1], true, selectedButton == i + 1);
-        }
-        else if(newGameEntryTypes[i] == 1){
-            draw_button(newGameEntryPos[i][0], newGameEntryPos[i][1], newGameEntries[i], true, selectedButton == i + 1);
-        }
-    }
+    draw_selection_button(160, 40, "Board", newGameValues[0], "", selectedButton == 1);
+    draw_selection_button(128, 90, "Player", newGameValues[1], "", selectedButton == 2);
+    draw_selection_button(192, 90, "Bots", newGameValues[2], "", selectedButton == 3);
+    draw_selection_button(108, 140, "Figure Count", newGameValues[3], "", selectedButton == 4);
+    draw_selection_button(212, 140, "Bot Strength", -1, botStrengthValues[newGameValues[4] - 1], selectedButton == 5);
+    draw_button(160, 170, "Colors", true, selectedButton == 6);
+    draw_button(160, 200, "Start", true, selectedButton == 7);
     gfx_SwapDraw();
 }
 

@@ -1,6 +1,7 @@
 #include "ui.hpp"
 #include "gfx/colors.h"
-#include "graphx.h"
+#include <graphx.h>
+#include <keypadc.h>
 
 void draw_button(int x, int y, const char *label, bool enabled, bool selected){
     gfx_SetColor(BLACK);
@@ -37,15 +38,15 @@ void draw_selection_button(int x, int y, const char* label, const int number, co
     gfx_PrintStringXY(label, x - gfx_GetStringWidth(label) / 2, y - 15);
 }
 
-void draw_main_menu(int selectedButton, int *mainMenuEntryTypes){
-    const char* mainMenuEntries[5] = {"Load Game", "New Game", "Settings", "Credits", "Exit"};
-    const int mainMenuEntryPos[5][2] = {{160, 40}, {160, 70}, {160, 100}, {160, 130}, {160, 160}};
+void draw_main_menu(int selectedButton, bool loadDisabled){
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(120, 40, 80, 140);
     gfx_PrintStringXY("LudoCE 0.0.1", 160 - gfx_GetStringWidth("LudoCE 0.0.1") / 2, 5);
-    for(int i = 0; i < 5; i++){
-        draw_button(mainMenuEntryPos[i][0], mainMenuEntryPos[i][1], mainMenuEntries[i], mainMenuEntryTypes[i] == 1, selectedButton == i);
-    }
+    draw_button(160, 40, "Load Game", loadDisabled, selectedButton == 0);
+    draw_button(160, 70, "New Game", true, selectedButton == 1);
+    draw_button(160, 100, "Settings", true, selectedButton == 2);
+    draw_button(160, 130, "Credits", true, selectedButton == 3);
+    draw_button(160, 160, "Exit", true, selectedButton == 4);
     gfx_SwapDraw();
 }
 
@@ -53,13 +54,13 @@ void draw_new_game_menu(int selectedButton, int *newGameValues){
     const char* botStrengthValues[3] = {"Easy", "Normal", "Hard"};
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(0, 0, 320, 240);
-    draw_selection_button(160, 40, "Board", newGameValues[0], "", selectedButton == 1);
-    draw_selection_button(128, 90, "Player", newGameValues[1], "", selectedButton == 2);
-    draw_selection_button(192, 90, "Bots", newGameValues[2], "", selectedButton == 3);
-    draw_selection_button(108, 140, "Figure Count", newGameValues[3], "", selectedButton == 4);
-    draw_selection_button(212, 140, "Bot Strength", -1, botStrengthValues[newGameValues[4] - 1], selectedButton == 5);
-    draw_button(160, 170, "Colors", true, selectedButton == 6);
-    draw_button(160, 200, "Start", true, selectedButton == 7);
+    draw_selection_button(160, 40, "Board", newGameValues[0], "", selectedButton == 0);
+    draw_selection_button(128, 90, "Player", newGameValues[1], "", selectedButton == 1);
+    draw_selection_button(192, 90, "Bots", newGameValues[2], "", selectedButton == 2);
+    draw_selection_button(108, 140, "Figure Count", newGameValues[3], "", selectedButton == 3);
+    draw_selection_button(212, 140, "Bot Strength", -1, botStrengthValues[newGameValues[4] - 1], selectedButton == 4);
+    draw_button(160, 170, "Colors", true, selectedButton == 5);
+    draw_button(160, 200, "Start", true, selectedButton == 6);
     gfx_SwapDraw();
 }
 
@@ -67,4 +68,24 @@ void draw_credits(){
     const char *text = "Lorem ipsum dolor sit amet, ...";
     gfx_PrintStringXY(text, 160 - gfx_GetStringWidth(text) / 2, 20);
     gfx_SwapDraw();
+}
+
+int menu_up_down(int keycount, int selectedEntry, int lastEntry, kb_key_t prevkey7){
+    if(kb_Data[7] == kb_Down && (prevkey7 != kb_Down || keycount % 10 == 9)){
+        if(selectedEntry == lastEntry){
+            selectedEntry = 0;
+        }
+        else{
+            selectedEntry++;
+        }
+    }
+    if(kb_Data[7] == kb_Up && (prevkey7 != kb_Up || keycount % 10 == 9)){
+        if(selectedEntry == 0){
+            selectedEntry = lastEntry;
+        }
+        else{
+            selectedEntry--;
+        }
+    }
+    return selectedEntry;
 }

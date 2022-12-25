@@ -9,9 +9,7 @@ int get_color(int playerNumber){
     if(playerNumber >= 0 && playerNumber < BOARD_DATA[0]){
         return playerNumber / BOARD_DATA[2] + 2;
     }
-    else{
-        return -1;
-    }
+    return -1;
 }
 
 int occupied_by(int position, int playerPositions[]){
@@ -49,9 +47,7 @@ int move_n_fields(int piece_color, int position, int n){
     else if(position <= BOARD_DATA[1]){//go from end of board to 0
         return position + n - (BOARD_DATA[1] + 1);
     }
-    else{
-        return position;
-    }
+    return position;
 }
 
 int *throw_out(int playerPositions[], int player, int old_position, int n){
@@ -116,11 +112,12 @@ bool all_out(int playerPositions[], int playerNumberStart, int hm_pos){
 }
 
 bool is_player_movable(int playerPositions[], int piece_color, int selectedPlayer, int n){
-    int hm_pos, playerNumberStart, startPoint;
+    int hm_pos, playerNumberStart, startPoint, h_size;
     
     hm_pos = BOARD_COLOR_DATA[piece_color - 2][3];
     playerNumberStart = BOARD_COLOR_DATA[piece_color - 2][4];
     startPoint = BOARD_COLOR_DATA[piece_color - 2][2];
+    h_size = BOARD_DATA[2];
 
     int occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[playerNumberStart + selectedPlayer], n), playerPositions);
     if(get_color(occupyingPlayer) == piece_color){
@@ -132,16 +129,15 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
         }
         return false;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//need to move from startpoint --> this player
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
         return true;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && piece_color == get_color(occupyingPlayer) && get_color(occupied_by(move_n_fields(piece_color, startPoint, n), playerPositions)) != piece_color){//need to move from startpoint --> not this player
-        return false;
+    for(int i = 0; i < h_size; i++){
+        if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + i] == startPoint){
+            return false;
+        }
     }
-    else if(get_color(occupyingPlayer) != piece_color){//if move is even possible
-        return true;
-    }
-    return false;
+    return true;
 }
 
 int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int n){
@@ -159,70 +155,55 @@ int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int
 }
 
 int *move_enemy(int playerPositions[], int piece_color, int n){
-    int hm_pos, playerNumberStart, occupyingPlayer, startPoint, movable;
-    movable = -1;
-    
-    hm_pos = BOARD_COLOR_DATA[piece_color - 2][3];
+    int occupyingPlayer, movableCounter, throwoutCounter, playerNumberStart;
+    bool playersMovable[4] = {false, false, false, false};
+    bool throwoutPossible[4] = {false, false, false, false};
+    movableCounter = 0;
+    throwoutCounter = 0;
     playerNumberStart = BOARD_COLOR_DATA[piece_color - 2][4];
-    startPoint = BOARD_COLOR_DATA[piece_color - 2][2];
 
-    occupyingPlayer = occupied_by(startPoint, playerPositions);
-    if(occupyingPlayer == -1 || get_color(occupyingPlayer) != piece_color){
+    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+        if(is_player_movable(playerPositions, piece_color, i - playerNumberStart, n)){
+            playersMovable[i - playerNumberStart] = true;
+            movableCounter++;
+        }
+        occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
+        if(occupyingPlayer != -1 && get_color(occupyingPlayer) != piece_color && playersMovable[i]){
+            throwoutPossible[i - playerNumberStart] = true;
+            throwoutCounter++;
+        }
+    }
+
+    if(throwoutCounter > 0){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-            if(n == 6 && playerPositions[i] >= hm_pos){
-                playerPositions[BOARD_DATA[0]] = playerPositions[i];//store the old position of the player in the last value of playerPositions[]
-                if(occupyingPlayer != -1){
-                    playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//move player out of home if you have to + throw out player
-                    return playerPositions;
-                }else{
-                    playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player out of home if you have to 
-                    return playerPositions;
-                }
+            if(throwoutPossible[i - playerNumberStart] && rand() % 10 != 0){
+                playerPositions[BOARD_DATA[0]] = playerPositions[i];
+                playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
+                return playerPositions;
             }
         }
     }
-
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] == startPoint && (occupyingPlayer == -1 || get_color(occupyingPlayer) != piece_color) && !all_out(playerPositions, playerNumberStart, hm_pos)){
-            playerPositions[BOARD_DATA[0]] = playerPositions[i];
-            playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player from start point if you have to
-            return playerPositions;
-        }
-    }
-
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] <= BOARD_DATA[1] && move_n_fields(piece_color, playerPositions[i], n) > BOARD_DATA[1] && occupyingPlayer == -1){
-            playerPositions[BOARD_DATA[0]] = playerPositions[i];
-            playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//priorize entering the house
-            return playerPositions;
-        }
-    }
-
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] < hm_pos && occupyingPlayer != -1 && get_color(occupyingPlayer) != piece_color && rand() % 10 != 0){
-            playerPositions[BOARD_DATA[0]] = playerPositions[i];
-            playerPositions = throw_out(playerPositions, i, playerPositions[i], n);//throw out player
-            return playerPositions;
-        }
-    }
-    
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        occupyingPlayer = occupied_by(move_n_fields(piece_color, playerPositions[i], n), playerPositions);
-        if(playerPositions[i] < hm_pos && occupyingPlayer == -1 && move_n_fields(piece_color, playerPositions[i], n) != playerPositions[i]){
-            movable = i;
-            if(rand() % 4 != 0){
+    else if(movableCounter > 0){
+        for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+            if(playersMovable[i - playerNumberStart] && rand() % 4 != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
-                playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);//move player to empty field
+                if(throwoutPossible[i - playerNumberStart]){
+                    playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
+                }
+                else{
+                    playerPositions[i] = move_n_fields(piece_color, playerPositions[i], n);
+                }
                 return playerPositions;
-            }   
+            }  
         }
     }
-    if(movable != -1){//move a movable player, if not done before
-        playerPositions[BOARD_DATA[0]] = playerPositions[movable];
-        playerPositions[movable] = move_n_fields(piece_color, playerPositions[movable], n);//move player to empty field
+
+    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+        if(playersMovable[i - playerNumberStart]){
+            playerPositions[BOARD_DATA[0]] = playerPositions[i];
+            playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
+            return playerPositions;
+        }
     }
     return playerPositions;
 }

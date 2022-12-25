@@ -15,12 +15,10 @@ int main(){
     gfx_Begin();
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0);
     gfx_SetDrawBuffer();
-
-    int mainMenuEntryTypes[5] = {0, 1, 1, 1, 1}; // 0 = disabled, 1 = enabled
     
     while(true){
         int status = 0;
-        int playerPositions[17] = {41, 42, 43, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
+        int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
         int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {1, 3}};
         int newGameValues[5] = {4, 4, 0, 4, 2}; //Player count, Player, Bots, Figure count, Bot Strength
         int newGameColors[4] = {1, 2, 3, 4}; // BLUE, RED, YELLOW, GREEN
@@ -33,39 +31,22 @@ int main(){
         kb_key_t prevkey7 = kb_Data[7];
         int keycount = 0;
         int selectedEntry = 1;
+        bool loadEnabled = false;
         //Main Menu
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
         gfx_FillScreen(BACKGROUND_YELLOW);
         if(status == 0){
             while(kb_Data[6] != kb_Clear){
-                if(kb_Data[7] == kb_Up && (prevkey7 != kb_Up || keycount % 10 == 9)){
-                    if(selectedEntry == 0){
-                        selectedEntry = 4;
-                    }else if(selectedEntry == 1 && mainMenuEntryTypes[0] == 0){
-                        selectedEntry = 4;
-                    }
-                    else{
-                        selectedEntry--;
-                    }
-                }
-                if(kb_Data[7] == kb_Down && (prevkey7 != kb_Down || keycount % 10 == 9)){
-                    if(selectedEntry == 4){
-                        if(mainMenuEntryTypes[0] == 0){
-                            selectedEntry = 1;
-                        }else{
-                            selectedEntry = 0;
-                        }
-                    }
-                    else{
-                        selectedEntry++;
-                    }
+                selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
+                if(selectedEntry == 0 && !loadEnabled){//Skip disabled entry
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
                     status = selectedEntry;
                     break;
                 }
-                draw_main_menu(selectedEntry, mainMenuEntryTypes);
+                draw_main_menu(selectedEntry, loadEnabled);
                 
                 if(kb_Data[7] == prevkey7){
                     keycount = keycount + 1;
@@ -85,56 +66,41 @@ int main(){
 
         if(status == 1){
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
-                if(kb_Data[7] == kb_Up && (prevkey7 != kb_Up || keycount % 10 == 9)){
-                    if(selectedEntry == 1){
-                        selectedEntry = 7;
-                    }
-                    else{
-                        selectedEntry--;
-                    }
-                }
-                if(kb_Data[7] == kb_Down && (prevkey7 != kb_Down || keycount % 10 == 9)){
-                    if(selectedEntry == 7){
-                        selectedEntry = 1;
-                    }
-                    else{
-                        selectedEntry++;
-                    }
-                }
-                if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 6){
-                    if(newGameValues[selectedEntry - 1] != newGameValuesBorder[selectedEntry - 1][0]){
-                        newGameValues[selectedEntry - 1]--;
+                selectedEntry = menu_up_down(keycount, selectedEntry, 6, prevkey7);
+                if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 5){
+                    if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][0]){
+                        newGameValues[selectedEntry]--;
                     }
                     // Fit other values
-                    if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
+                    if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
                         newGameValues[2]++;
                     }
-                    else if(selectedEntry == 3 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
+                    else if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
                         newGameValues[1]++;
                     }
                 }
-                if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 6){
-                    if(newGameValues[selectedEntry - 1] != newGameValuesBorder[selectedEntry - 1][1]){
-                        newGameValues[selectedEntry - 1]++;
+                if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 5){
+                    if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][1]){
+                        newGameValues[selectedEntry]++;
                     }
                     // Fit other values
-                    if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
+                    if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
                         newGameValues[2]--;
                     }
-                    else if(selectedEntry == 3 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
+                    else if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
                         newGameValues[1]--;
                     }
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
-                    if(selectedEntry == 6){ // color selection
+                    if(selectedEntry == 5){ // color selection
                         // COLOR SELECTION MENU HERE   
                         status = 5;
-                    }else if(selectedEntry == 7){ // start new game
+                    }else if(selectedEntry == 6){ // start new game
                         // apply values                                                                                            !!!temporary until color selection is implemented!!!
                         for(int i = 0; i < newGameValues[1]; i++){ // assign players
                             playerTypes[i] = 0;
                         }
-                        for(int i = newGameValues[1]; i < newGameValues[0]; i++){ // assign bots
+                        for(int i = newGameValues[1]; i < newGameValues[1] + newGameValues[2]; i++){ // assign bots
                             playerTypes[i] = 1;
                         }
                         //apply bot strength here//

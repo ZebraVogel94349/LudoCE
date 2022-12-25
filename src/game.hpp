@@ -11,5 +11,4 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
 int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int n);
 int *move_enemy(int playerPositions[], int piece_color, int n);
 int check_for_win(int playerPositions[]);
-
 #endif

@@ -41,11 +41,8 @@ int move_n_fields(int piece_color, int position, int n){
     else if((position >= h_start && position + n < h_start + BOARD_DATA[2])){//move inside house
         return position + n;
     }
-    else if(position + n <= BOARD_DATA[1]){//move normally
-        return position + n;
-    }
-    else if(position <= BOARD_DATA[1]){//go from end of board to 0
-        return position + n - (BOARD_DATA[1] + 1);
+    else if(position <= BOARD_DATA[1]){//move normally
+        return (position + n) % (BOARD_DATA[1] + 1);
     }
     return position;
 }
@@ -77,9 +74,8 @@ int check_for_order(int playerPositions[], int piece_color){
     if(fields == BOARD_DATA[2]){//if all players in home
         return true;
     }
-    else{
-        fields = 0;//otherwise reset fields
-    }
+
+    fields = 0;
 
     for(int j = 1; j < BOARD_DATA[2]; j++){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
@@ -147,11 +143,11 @@ int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int
     playerPositions[BOARD_DATA[0]] = playerPositions[player];
     if(occupyingPlayer != -1){//if someone to throw out
         playerPositions = throw_out(playerPositions, player, playerPositions[player], n);//throw out player
-        return playerPositions;
-    }else{
-        playerPositions[player] = move_n_fields(piece_color, playerPositions[player], n);//move player to empty field
-        return playerPositions;
     }
+    else{
+        playerPositions[player] = move_n_fields(piece_color, playerPositions[player], n);//move player to empty field
+    }
+    return playerPositions;
 }
 
 int *move_enemy(int playerPositions[], int piece_color, int n){

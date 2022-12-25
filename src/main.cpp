@@ -21,7 +21,6 @@ int main(){
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
         int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {1, 3}};
         int newGameValues[5] = {4, 4, 0, 4, 2}; //Player count, Player, Bots, Figure count, Bot Strength
-        int newGameColors[4] = {1, 2, 3, 4}; // BLUE, RED, YELLOW, GREEN
         int r = 0;
         int again = 0;
         int playerTypes[4] = {2, 2, 2, 2};
@@ -32,11 +31,11 @@ int main(){
         int keycount = 0;
         int selectedEntry = 1;
         bool loadEnabled = false;
-        //Main Menu
+        
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
         gfx_FillScreen(BACKGROUND_YELLOW);
-        if(status == 0){
+        if(status == 0){//Main Menu
             while(kb_Data[6] != kb_Clear){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
                 if(selectedEntry == 0 && !loadEnabled){//Skip disabled entry
@@ -64,14 +63,13 @@ int main(){
             status = 4;
         }
 
-        if(status == 1){
+        if(status == 1){//New game menu
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 6, prevkey7);
                 if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 5){
                     if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][0]){
                         newGameValues[selectedEntry]--;
                     }
-                    // Fit other values
                     if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
                         newGameValues[2]++;
                     }
@@ -83,7 +81,6 @@ int main(){
                     if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][1]){
                         newGameValues[selectedEntry]++;
                     }
-                    // Fit other values
                     if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
                         newGameValues[2]--;
                     }

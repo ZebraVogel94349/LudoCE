@@ -37,7 +37,7 @@ void draw_player(int playerPositions[], int start, int end){
     }
 }
 
-void draw_name(int playerTypes[], int newGameValues[]){
+void draw_name(int playerTypes[], int newGameValues[], int player_indicator){
     int y;
     char names[2][4][5] = {{"P1", "P2", "P3", "P4"}, {"CPU1", "CPU2", "CPU3", "CPU4"}};
     int pb[2] = {0, 0};
@@ -48,16 +48,22 @@ void draw_name(int playerTypes[], int newGameValues[]){
         }
         int width = gfx_GetStringWidth(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]]);
         gfx_PrintStringXY(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]], BOARD[56 + i * 4][0] - width / 2 + 20, BOARD[56 + i * 4][1] + y);
+
+        gfx_SetColor(BLACK);
+        if(i == (player_indicator - 2)){
+            gfx_Rectangle_NoClip(BOARD[56 + (player_indicator - 2) * 4][0] - width / 2 + 15, BOARD[56 + (player_indicator - 2) * 4][1] + y, width + 10, 10);
+        }
+
         pb[playerTypes[i] == 0]++;
     }
 }
 
-void draw_everything(int playerTypes[], int newGameValues[], int playerPositions[], int toClear, int number){
+void draw_everything(int playerTypes[], int newGameValues[], int playerPositions[], int toClear, int number, int player_indicator){
     if(occupied_by(toClear, playerPositions) == -1){
         draw_field_pos(toClear);
     }
     draw_player(playerPositions, 0, BOARD_DATA[0]);
-    draw_name(playerTypes, newGameValues);
+    draw_name(playerTypes, newGameValues, player_indicator);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
@@ -72,7 +78,7 @@ void draw_everything(int playerTypes[], int newGameValues[], int playerPositions
         draw_field_pos(toClear);
     }
     draw_player(playerPositions, 0, BOARD_DATA[0]);
-    draw_name(playerTypes, newGameValues);
+    draw_name(playerTypes, newGameValues, player_indicator);
     draw_field_pos(toClear);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);

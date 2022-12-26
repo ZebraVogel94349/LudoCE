@@ -119,14 +119,14 @@ bool is_player_movable(int playerPositions[], int piece_color, int selectedPlaye
     if(get_color(occupyingPlayer) == piece_color){
         return false;
     }
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
+        return true;
+    }
     else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos) && piece_color != get_color(occupyingPlayer)){;//need to move out of house
         if(playerPositions[playerNumberStart + selectedPlayer] >= hm_pos){
             return true;
         }
         return false;
-    }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
-        return true;
     }
     for(int i = 0; i < h_size; i++){
         if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + i] == startPoint){

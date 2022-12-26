@@ -3,6 +3,7 @@
 #include "const.h"
 #include "draw.hpp"
 #include "game.hpp"
+#include "const.h"
 
 void draw_field(int x, int y, int r, int color){
     gfx_SetColor(BLACK);
@@ -36,11 +37,27 @@ void draw_player(int playerPositions[], int start, int end){
     }
 }
 
-void draw_everything(int playerPositions[], int toClear, int number){
+void draw_name(int playerTypes[], int newGameValues[]){
+    int y;
+    char names[2][4][5] = {{"P1", "P2", "P3", "P4"}, {"CPU1", "CPU2", "CPU3", "CPU4"}};
+    int pb[2] = {0, 0};
+    for(int i = 0; i < newGameValues[0]; i++){
+        y = 45;
+        if(i == 1 || i == 2){
+            y = -10;
+        }
+        int width = gfx_GetStringWidth(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]]);
+        gfx_PrintStringXY(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]], BOARD[56 + i * 4][0] - width / 2 + 20, BOARD[56 + i * 4][1] + y);
+        pb[playerTypes[i] == 0]++;
+    }
+}
+
+void draw_everything(int playerTypes[], int newGameValues[], int playerPositions[], int toClear, int number){
     if(occupied_by(toClear, playerPositions) == -1){
         draw_field_pos(toClear);
     }
     draw_player(playerPositions, 0, BOARD_DATA[0]);
+    draw_name(playerTypes, newGameValues);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
     if(number != 0){
@@ -55,6 +72,7 @@ void draw_everything(int playerPositions[], int toClear, int number){
         draw_field_pos(toClear);
     }
     draw_player(playerPositions, 0, BOARD_DATA[0]);
+    draw_name(playerTypes, newGameValues);
     draw_field_pos(toClear);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);

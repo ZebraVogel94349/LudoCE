@@ -41,6 +41,11 @@ void draw_name(int playerTypes[], int newGameValues[], int player_indicator){
     int y;
     char names[2][4][5] = {{"P1", "P2", "P3", "P4"}, {"CPU1", "CPU2", "CPU3", "CPU4"}};
     int pb[2] = {0, 0};
+    gfx_SetColor(BACKGROUND_YELLOW);
+    gfx_FillRectangle_NoClip(BOARD[56][0] - 5, BOARD[56][1] + 43, 50, 12);
+    gfx_FillRectangle_NoClip(BOARD[60][0] - 5, BOARD[60][1] + -12, 50, 12);
+    gfx_FillRectangle_NoClip(BOARD[64][0] - 5, BOARD[64][1] + -12, 50, 12);
+    gfx_FillRectangle_NoClip(BOARD[68][0] - 5, BOARD[68][1] + 43, 50, 12);
     for(int i = 0; i < newGameValues[0]; i++){
         y = 45;
         if(i == 1 || i == 2){
@@ -51,9 +56,8 @@ void draw_name(int playerTypes[], int newGameValues[], int player_indicator){
 
         gfx_SetColor(BLACK);
         if(i == (player_indicator - 2)){
-            gfx_Rectangle_NoClip(BOARD[56 + (player_indicator - 2) * 4][0] - width / 2 + 15, BOARD[56 + (player_indicator - 2) * 4][1] + y, width + 10, 10);
+            gfx_Rectangle_NoClip(BOARD[56 + (player_indicator - 2) * 4][0] - width / 2 + 15, BOARD[56 + (player_indicator - 2) * 4][1] + y - 2, width + 10, 12);
         }
-
         pb[playerTypes[i] == 0]++;
     }
 }

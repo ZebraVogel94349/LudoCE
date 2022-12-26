@@ -13,6 +13,7 @@ COMPRESSED  ?= NO
 COMPRESSED_MODE = zx7
 ICON        ?= iconc.png
 DESCRIPTION ?= "Ludo"
+ARCHIVED ?= YES
 
 L ?= graphx
 

@@ -11,9 +11,8 @@
 #include "game.hpp"
 
 int main(){
-    int savearr[23] = {0};
+    int savearr[24] = {0};
     bool loadEnabled = false;
-
     ti_var_t sv;
 
     srand(rtc_Time());
@@ -23,7 +22,7 @@ int main(){
     while(true){
         sv = ti_Open("LUDOSV","r");
 	    if(sv != 0){
-            ti_Read(savearr,69,1,sv);
+            ti_Read(savearr,72,1,sv);
             ti_Close(sv);
             loadEnabled = true;
         }
@@ -40,7 +39,7 @@ int main(){
         kb_key_t prevkey7 = kb_Data[7];
         int keycount = 0;
         int selectedEntry = 1;
-        
+        int currentPlayerSave = savearr[3];
         
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
@@ -57,10 +56,10 @@ int main(){
                         newGameValues[3] = savearr[1];
                         newGameValues[4] = savearr[2];
                         for(int i = 0; i < BOARD_DATA[2]; i++){
-                            playerTypes[i] = savearr[3 + i];
+                            playerTypes[i] = savearr[4 + i];
                         }
                         for(int i = 0; i < BOARD_DATA[0]; i++){
-                            playerPositions[i] = savearr[3 + BOARD_DATA[2] + i];
+                            playerPositions[i] = savearr[4 + BOARD_DATA[2] + i];
                         }
                         status = 6;
                         break;
@@ -155,6 +154,10 @@ int main(){
             draw_player(playerPositions, 0, BOARD_DATA[0]);
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions)){
                 for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); i++){
+                    if(currentPlayerSave != 0){
+                        i = currentPlayerSave;
+                        currentPlayerSave = 0;
+                    }
                     again = 1;
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
@@ -231,7 +234,8 @@ int main(){
                             }
                             if(check_for_order(playerPositions, i) && again < 3){
                                 again++;
-                            }   
+                            }
+                            savearr[3] = i;
                         }
                         msleep(500);
                     }
@@ -259,13 +263,13 @@ int main(){
             savearr[1] = newGameValues[3];
             savearr[2] = newGameValues[4];
             for(int i = 0; i < BOARD_DATA[2]; i++){
-                savearr[3 + i] = playerTypes[i];
+                savearr[4 + i] = playerTypes[i];
             }
             for(int i = 0; i < BOARD_DATA[0]; i++){
-                savearr[3 + BOARD_DATA[2] + i] = playerPositions[i];
+                savearr[4 + BOARD_DATA[2] + i] = playerPositions[i];
             }
 	        sv = ti_Open("LUDOSV","w");
-            ti_Write(savearr,69,1,sv);
+            ti_Write(savearr,72,1,sv);
 	        ti_SetArchiveStatus(true, sv);
             ti_Close(sv);
         }

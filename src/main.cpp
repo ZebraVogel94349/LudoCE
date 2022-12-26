@@ -11,12 +11,22 @@
 #include "game.hpp"
 
 int main(){
+    int savearr[23] = {0};
+    bool loadEnabled = false;
+
+    ti_var_t sv;
+
     srand(rtc_Time());
     gfx_Begin();
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0);
     gfx_SetDrawBuffer();
-    
     while(true){
+        sv = ti_Open("LUDOSV","r");
+	    if(sv != 0){
+            ti_Read(savearr,69,1,sv);
+            ti_Close(sv);
+            loadEnabled = true;
+        }
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
         int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {1, 3}};
@@ -30,7 +40,7 @@ int main(){
         kb_key_t prevkey7 = kb_Data[7];
         int keycount = 0;
         int selectedEntry = 1;
-        bool loadEnabled = false;
+        
         
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
@@ -42,6 +52,19 @@ int main(){
                     selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
+                    if(selectedEntry == 0){
+                        newGameValues[0] = savearr[0];
+                        newGameValues[3] = savearr[1];
+                        newGameValues[4] = savearr[2];
+                        for(int i = 0; i < BOARD_DATA[2]; i++){
+                            playerTypes[i] = savearr[3 + i];
+                        }
+                        for(int i = 0; i < BOARD_DATA[0]; i++){
+                            playerPositions[i] = savearr[3 + BOARD_DATA[2] + i];
+                        }
+                        status = 6;
+                        break;
+                    }
                     status = selectedEntry;
                     break;
                 }
@@ -231,6 +254,20 @@ int main(){
                 }
             }
             status = 0;
+
+            savearr[0] = newGameValues[0];
+            savearr[1] = newGameValues[3];
+            savearr[2] = newGameValues[4];
+            for(int i = 0; i < BOARD_DATA[2]; i++){
+                savearr[3 + i] = playerTypes[i];
+            }
+            for(int i = 0; i < BOARD_DATA[0]; i++){
+                savearr[3 + BOARD_DATA[2] + i] = playerPositions[i];
+            }
+	        sv = ti_Open("LUDOSV","w");
+            ti_Write(savearr,69,1,sv);
+	        ti_SetArchiveStatus(true, sv);
+            ti_Close(sv);
         }
         if(status == 3){
             gfx_FillScreen(BACKGROUND_YELLOW);
@@ -245,6 +282,6 @@ int main(){
         if(status == 4){
             break;
         }
-    }  
+    }
     gfx_End();
 }

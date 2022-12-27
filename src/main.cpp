@@ -86,6 +86,7 @@ int main(){
         }
 
         if(status == 1){//New game menu
+            currentPlayerSave = 0;
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 6, prevkey7);
                 if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 5){

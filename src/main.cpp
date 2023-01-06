@@ -11,7 +11,7 @@
 #include "game.hpp"
 
 int main(){
-    int savearr[24] = {0};
+    int savearr[25] = {0};
     bool loadEnabled = false;
     ti_var_t sv;
 
@@ -22,7 +22,7 @@ int main(){
     while(true){
         sv = ti_Open("LUDOSV","r");
 	    if(sv != 0){
-            ti_Read(savearr,72,1,sv);
+            ti_Read(savearr,75,1,sv);
             ti_Close(sv);
             loadEnabled = true;
         }
@@ -40,6 +40,7 @@ int main(){
         int keycount = 0;
         int selectedEntry = 1;
         int currentPlayerSave = savearr[3];
+        int againSave = savearr[4];
         
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
@@ -56,10 +57,10 @@ int main(){
                         newGameValues[3] = savearr[1];
                         newGameValues[4] = savearr[2];
                         for(int i = 0; i < BOARD_DATA[2]; i++){
-                            playerTypes[i] = savearr[4 + i];
+                            playerTypes[i] = savearr[5 + i];
                         }
                         for(int i = 0; i < BOARD_DATA[0]; i++){
-                            playerPositions[i] = savearr[4 + BOARD_DATA[2] + i];
+                            playerPositions[i] = savearr[5 + BOARD_DATA[2] + i];
                         }
                         status = 6;
                         break;
@@ -87,6 +88,7 @@ int main(){
 
         if(status == 1){//New game menu
             currentPlayerSave = 0;
+            againSave = 0;
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 6, prevkey7);
                 if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 5){
@@ -160,13 +162,20 @@ int main(){
                         currentPlayerSave = 0;
                     }
                     again = 1;
+                    if(againSave != 0){
+                        again = againSave;
+                        againSave = 0;
+                    }
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
                         draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
-                        for(int k = 0; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
                             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1)){//wait for 2nd to roll the die
                                 prevkey1 = kb_Data[1];
                                 kb_Scan();
+                            }
+                            if(kb_Data[6] == kb_Clear){
+                                break;
                             }
                             r = rand() % 6 + 1;
                             draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
@@ -237,6 +246,7 @@ int main(){
                                 again++;
                             }
                             savearr[3] = i;
+                            savearr[4] = again;
                         }
                         msleep(500);
                     }
@@ -264,13 +274,13 @@ int main(){
             savearr[1] = newGameValues[3];
             savearr[2] = newGameValues[4];
             for(int i = 0; i < BOARD_DATA[2]; i++){
-                savearr[4 + i] = playerTypes[i];
+                savearr[5 + i] = playerTypes[i];
             }
             for(int i = 0; i < BOARD_DATA[0]; i++){
-                savearr[4 + BOARD_DATA[2] + i] = playerPositions[i];
+                savearr[5 + BOARD_DATA[2] + i] = playerPositions[i];
             }
 	        sv = ti_Open("LUDOSV","w");
-            ti_Write(savearr,72,1,sv);
+            ti_Write(savearr,75,1,sv);
 	        ti_SetArchiveStatus(true, sv);
             ti_Close(sv);
         }

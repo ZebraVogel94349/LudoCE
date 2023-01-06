@@ -118,14 +118,15 @@ int main(){
                         // COLOR SELECTION MENU HERE   
                         status = 5;
                     }else if(selectedEntry == 6){ // start new game
-                        // apply values                                                                                            !!!temporary until color selection is implemented!!!
                         for(int i = 0; i < newGameValues[1]; i++){ // assign players
                             playerTypes[i] = 0;
                         }
                         for(int i = newGameValues[1]; i < newGameValues[1] + newGameValues[2]; i++){ // assign bots
                             playerTypes[i] = 1;
                         }
-
+                        for(int i = (newGameValues[1] + newGameValues[2]) * 4; i < BOARD_DATA[0]; i++){//Set position of all disabled players to -1
+                            playerPositions[i] = -1;
+                        }
                         status = 6;
                     }
                 }
@@ -180,7 +181,6 @@ int main(){
                             draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
-                            msleep(500);
                             kb_Scan();
                             for(int j = 0; j < BOARD_DATA[2]; j++){//select the first movable player
                                 if(is_player_movable(playerPositions, i, j, r)){

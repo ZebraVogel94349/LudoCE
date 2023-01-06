@@ -64,7 +64,7 @@ int check_for_order(int playerPositions[], int piece_color){
     playerNumberStart = BOARD_COLOR_DATA[piece_color - 2][4];
 
     for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        if(playerPositions[i] < h_start){//if player on the field
+        if(playerPositions[i] < h_start && playerPositions[i] > -1){//if player on the field
             return false;
         }
         else if(playerPositions[i] > BOARD_DATA[1]){//one more player in home

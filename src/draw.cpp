@@ -33,7 +33,9 @@ void draw_board(){
 
 void draw_player(int playerPositions[], int start, int end){
     for(int i = start; i < end; i++){
-        draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, get_color(i));
+        if(playerPositions[i] != -1){
+            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, get_color(i));
+        }
     }
 }
 

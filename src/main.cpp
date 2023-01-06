@@ -181,6 +181,7 @@ int main(){
                             draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
+                            msleep(500);
                             kb_Scan();
                             for(int j = 0; j < BOARD_DATA[2]; j++){//select the first movable player
                                 if(is_player_movable(playerPositions, i, j, r)){
@@ -246,12 +247,14 @@ int main(){
                                 again++;
                             }
                             savearr[3] = i;
+                            if(k + 1 == again){//increase the saved current player by 1 if quit at the end of the current's player move
+                                savearr[3]++;
+                            }
                             savearr[4] = again;
                         }
-                        msleep(500);
                     }
                     else if(playerTypes[i - 2] == 1){
-                        for(int k = 0; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
                             r = rand() % 6 + 1;
                             *playerPositions = *move_enemy(playerPositions, i, r);
                             draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
@@ -262,7 +265,12 @@ int main(){
 
                             if(check_for_order(playerPositions, i) && again < 3){
                                 again++;
-                            }  
+                            } 
+                            savearr[3] = i;
+                            if(k + 1 == again){//increase the saved current player by 1 if quit at the end of the current's player move
+                                savearr[3]++;
+                            }
+                            savearr[4] = again;
                         }
                     }
                     if(r == 6){i--;}

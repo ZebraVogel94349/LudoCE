@@ -28,8 +28,8 @@ int main(){
         }
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
-        int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {1, 3}};
-        int newGameValues[5] = {4, 4, 0, 4, 2}; //Player count, Player, Bots, Figure count, Bot Strength
+        int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {0, 2}};
+        int newGameValues[5] = {4, 4, 0, 4, 1}; //Player count, Player, Bots, Figure count, Bot Strength
         int r = 0;
         int again = 0;
         int playerTypes[4] = {2, 2, 2, 2};
@@ -125,7 +125,6 @@ int main(){
                         for(int i = newGameValues[1]; i < newGameValues[1] + newGameValues[2]; i++){ // assign bots
                             playerTypes[i] = 1;
                         }
-                        //apply bot strength here//
 
                         status = 6;
                     }
@@ -256,7 +255,7 @@ int main(){
                     else if(playerTypes[i - 2] == 1){
                         for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
                             r = rand() % 6 + 1;
-                            *playerPositions = *move_enemy(playerPositions, i, r);
+                            *playerPositions = *move_enemy(playerPositions, i, r, newGameValues[4]);
                             draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             
                             msleep(500);

@@ -58,7 +58,7 @@ void draw_new_game_menu(int selectedButton, int *newGameValues){
     draw_selection_button(128, 90, "Player", newGameValues[1], "", selectedButton == 1);
     draw_selection_button(192, 90, "Bots", newGameValues[2], "", selectedButton == 2);
     draw_selection_button(108, 140, "Figure Count", newGameValues[3], "", selectedButton == 3);
-    draw_selection_button(212, 140, "Bot Strength", -1, botStrengthValues[newGameValues[4] - 1], selectedButton == 4);
+    draw_selection_button(212, 140, "Bot Strength", -1, botStrengthValues[newGameValues[4]], selectedButton == 4);
     draw_button(160, 170, "Colors", true, selectedButton == 5);
     draw_button(160, 200, "Start", true, selectedButton == 6);
     gfx_SwapDraw();

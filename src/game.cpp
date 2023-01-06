@@ -150,7 +150,7 @@ int *move_player(int playerPositions[], int piece_color, int selectedPlayer, int
     return playerPositions;
 }
 
-int *move_enemy(int playerPositions[], int piece_color, int n){
+int *move_enemy(int playerPositions[], int piece_color, int n, int botStrength){
     int occupyingPlayer, movableCounter, throwoutCounter, playerNumberStart;
     bool playersMovable[4] = {false, false, false, false};
     bool throwoutPossible[4] = {false, false, false, false};
@@ -172,7 +172,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
 
     if(throwoutCounter > 0){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-            if(throwoutPossible[i - playerNumberStart] && rand() % 10 != 0){
+            if(throwoutPossible[i - playerNumberStart] && rand() % (3 * (botStrength + 1)) != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
                 playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
                 return playerPositions;
@@ -181,7 +181,7 @@ int *move_enemy(int playerPositions[], int piece_color, int n){
     }
     else if(movableCounter > 0){
         for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-            if(playersMovable[i - playerNumberStart] && rand() % 4 != 0){
+            if(playersMovable[i - playerNumberStart] && rand() % (botStrength + 2) != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
                 if(throwoutPossible[i - playerNumberStart]){
                     playerPositions = throw_out(playerPositions, i, playerPositions[i], n);

@@ -196,7 +196,12 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength, i
     for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
         if(playersMovable[i - playerNumberStart]){
             playerPositions[BOARD_DATA[0]] = playerPositions[i];
-            playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
+            if(throwoutPossible[i - playerNumberStart]){
+                playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
+            }
+            else{
+                playerPositions[i] = move_n_fields(pieceColor, playerPositions[i], n);
+            }
             return playerPositions;
         }
     }

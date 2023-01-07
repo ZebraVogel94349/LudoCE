@@ -36,8 +36,8 @@ int main(){
 
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
-        int newGameValuesBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {0, 2}};
-        int newGameValues[5] = {4, 4, 0, 4, 1}; //Player count, Player, Bots, Figure count, Bot Strength
+        int gameSettingsBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {0, 2}};
+        int gameSettings[5] = {4, 4, 0, 4, 1}; //Player count, Player, Bots, Figure count, Bot Strength
         int r = 0;
         int again = 0;
         int playerTypes[4] = {2, 2, 2, 2};
@@ -60,10 +60,10 @@ int main(){
                     selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
-                    if(selectedEntry == 0){
-                        newGameValues[0] = savearr[1];
-                        newGameValues[3] = savearr[2];
-                        newGameValues[4] = savearr[3];
+                    if(selectedEntry == 0){//Load Game
+                        gameSettings[0] = savearr[1];
+                        gameSettings[3] = savearr[2];
+                        gameSettings[4] = savearr[3];
                         for(int i = 0; i < BOARD_DATA[2]; i++){
                             playerTypes[i] = savearr[6 + i];
                         }
@@ -100,25 +100,25 @@ int main(){
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 6, prevkey7);
                 if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 5){
-                    if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][0]){
-                        newGameValues[selectedEntry]--;
+                    if(gameSettings[selectedEntry] != gameSettingsBorder[selectedEntry][0]){
+                        gameSettings[selectedEntry]--;
                     }
-                    if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
-                        newGameValues[2]++;
+                    if(selectedEntry == 1 && gameSettings[1] + gameSettings[2] == 0){ //stay inside the player limit
+                        gameSettings[2]++;
                     }
-                    else if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] == 0){ //stay inside the player limit
-                        newGameValues[1]++;
+                    else if(selectedEntry == 2 && gameSettings[1] + gameSettings[2] == 0){ //stay inside the player limit
+                        gameSettings[1]++;
                     }
                 }
                 if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 5){
-                    if(newGameValues[selectedEntry] != newGameValuesBorder[selectedEntry][1]){
-                        newGameValues[selectedEntry]++;
+                    if(gameSettings[selectedEntry] != gameSettingsBorder[selectedEntry][1]){
+                        gameSettings[selectedEntry]++;
                     }
-                    if(selectedEntry == 1 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
-                        newGameValues[2]--;
+                    if(selectedEntry == 1 && gameSettings[1] + gameSettings[2] > gameSettingsBorder[0][1]){ //stay inside the player limit
+                        gameSettings[2]--;
                     }
-                    else if(selectedEntry == 2 && newGameValues[1] + newGameValues[2] > newGameValuesBorder[0][1]){ //stay inside the player limit
-                        newGameValues[1]--;
+                    else if(selectedEntry == 2 && gameSettings[1] + gameSettings[2] > gameSettingsBorder[0][1]){ //stay inside the player limit
+                        gameSettings[1]--;
                     }
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
@@ -126,19 +126,24 @@ int main(){
                         // COLOR SELECTION MENU HERE   
                         status = 5;
                     }else if(selectedEntry == 6){ // start new game
-                        for(int i = 0; i < newGameValues[1]; i++){ // assign players
+                        for(int i = 0; i < gameSettings[1]; i++){ // assign players
                             playerTypes[i] = 0;
                         }
-                        for(int i = newGameValues[1]; i < newGameValues[1] + newGameValues[2]; i++){ // assign bots
+                        for(int i = gameSettings[1]; i < gameSettings[1] + gameSettings[2]; i++){ // assign bots
                             playerTypes[i] = 1;
                         }
-                        for(int i = (newGameValues[1] + newGameValues[2]) * 4; i < BOARD_DATA[0]; i++){//Set position of all disabled players to -1
+                        for(int i = (gameSettings[1] + gameSettings[2]) * 4; i < BOARD_DATA[0]; i++){//Set position of all disabled colors to -1
                             playerPositions[i] = -1;
+                        }
+                        for(int i = 0; i < (gameSettings[1] + gameSettings[2]) * 4; i++){//Set position of all disabled figures to -1
+                            if(i % BOARD_DATA[2] >= gameSettings[3]){
+                                playerPositions[i] = -1;
+                            }         
                         }
                         status = 6;
                     }
                 }
-                draw_new_game_menu(selectedEntry, newGameValues);
+                draw_new_game_menu(selectedEntry, gameSettings);
 
                 if(kb_Data[7] == prevkey7){
                     keycount = keycount + 1;
@@ -163,8 +168,8 @@ int main(){
             gfx_FillScreen(BACKGROUND_YELLOW);
             draw_board();
             draw_player(playerPositions, 0, BOARD_DATA[0]);
-            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions)){
-                for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); i++){
+            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3])){
+                for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3]); i++){
                     if(currentPlayerSave != 0){
                         i = currentPlayerSave;
                         currentPlayerSave = 0;
@@ -176,8 +181,8 @@ int main(){
                     }
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
-                        draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
-                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
+                        draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3]); k++){
                             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1)){//wait for 2nd to roll the die
                                 prevkey1 = kb_Data[1];
                                 kb_Scan();
@@ -186,12 +191,12 @@ int main(){
                                 break;
                             }
                             r = rand() % 6 + 1;
-                            draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
                             kb_Scan();
-                            for(int j = 0; j < BOARD_DATA[2]; j++){//select the first movable player
-                                if(is_player_movable(playerPositions, i, j, r)){
+                            for(int j = 0; j < gameSettings[3]; j++){//select the first movable player
+                                if(is_player_movable(playerPositions, i, j, r, gameSettings[3])){
                                     selectedPlayer = j;
                                     break;
                                 }else{
@@ -201,28 +206,28 @@ int main(){
                             if(selectedPlayer != -1){
                                 while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){//wait for 2nd to move the player
                                     // draw selections
-                                    draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                    draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                                     draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], r), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + oldSelection], r));
                                     draw_player_selection(playerPositions, (i - 2) * BOARD_DATA[2] + selectedPlayer, (i - 2) * BOARD_DATA[2] + oldSelection);
                                     
                                     if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
                                         *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
-                                        draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                        draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                         break;
                                     }
                                     
                                     if(kb_Data[7] == kb_Left && kb_Data[7] != prevkey7){
                                         oldSelection = selectedPlayer;
-                                        for(int j = 0; j < BOARD_DATA[2]; j++){ 
+                                        for(int j = 0; j < gameSettings[3]; j++){ 
                                             if(selectedPlayer > 0){
                                                 selectedPlayer--;
                                             }
                                             else{
-                                                selectedPlayer = BOARD_DATA[2] - 1;
+                                                selectedPlayer = gameSettings[3] - 1;
                                             }
-                                            if(is_player_movable(playerPositions, i, selectedPlayer, r)){
+                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[3])){
                                                 break;
                                             }
                                         }
@@ -230,14 +235,14 @@ int main(){
                                     
                                     if(kb_Data[7] == kb_Right && kb_Data[7] != prevkey7){
                                         oldSelection = selectedPlayer;
-                                        for(int j = 0; j < BOARD_DATA[2]; j++){ 
-                                            if(selectedPlayer < BOARD_DATA[2] - 1){
+                                        for(int j = 0; j < gameSettings[3]; j++){ 
+                                            if(selectedPlayer < gameSettings[3] - 1){
                                                 selectedPlayer++;
                                             }
                                             else{
                                                 selectedPlayer = 0;
                                             }
-                                            if(is_player_movable(playerPositions, i, selectedPlayer, r)){
+                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[3])){
                                                 break;
                                             }
                                         }
@@ -250,7 +255,7 @@ int main(){
                                 prevkey7 = kb_Data[7];
                                 kb_Scan();
                             }
-                            if(check_for_order(playerPositions, i) && again < 3){
+                            if(check_for_order(playerPositions, i, gameSettings[3]) && again < 3){
                                 again++;
                             }
                             savearr[4] = i;
@@ -261,16 +266,16 @@ int main(){
                         }
                     }
                     else if(playerTypes[i - 2] == 1){
-                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions); k++){
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3]); k++){
                             r = rand() % 6 + 1;
-                            *playerPositions = *move_enemy(playerPositions, i, r, newGameValues[4]);
-                            draw_everything(playerTypes, newGameValues, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[4], gameSettings[3]);
+                            draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             
                             msleep(500);
                             
                             kb_Scan();
 
-                            if(check_for_order(playerPositions, i) && again < 3){
+                            if(check_for_order(playerPositions, i, gameSettings[3]) && again < 3){
                                 again++;
                             } 
                             savearr[4] = i;
@@ -286,9 +291,9 @@ int main(){
             status = 0;
             
             savearr[0] = VERSION;
-            savearr[1] = newGameValues[0];
-            savearr[2] = newGameValues[3];
-            savearr[3] = newGameValues[4];
+            savearr[1] = gameSettings[0];
+            savearr[2] = gameSettings[3];
+            savearr[3] = gameSettings[4];
             for(int i = 0; i < BOARD_DATA[2]; i++){
                 savearr[6 + i] = playerTypes[i];
             }

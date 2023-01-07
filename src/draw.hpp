@@ -6,8 +6,8 @@ void draw_field_pos(int position);
 void connect_fields(int x0, int y0, int x1, int y1);
 void draw_board();
 void draw_player(int playerPositions[], int start, int end);
-void draw_name(int playerTypes[], int newGameValues[], int playerIndicator);
-void draw_everything(int playerTypes[], int newGameValues[], int playerPositions[], int toClear, int number, int playerIndicator);
+void draw_name(int playerTypes[], int gameSettings[], int playerIndicator);
+void draw_everything(int playerTypes[], int gameSettings[], int playerPositions[], int toClear, int number, int playerIndicator);
 void draw_player_selection(int *playerPositions, int selectedPlayer, int oldSelection);
 void draw_potential_field(int selectedField, int oldField);
 #endif

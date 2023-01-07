@@ -56,14 +56,14 @@ int *throw_out(int playerPositions[], int player, int oldPosition, int n){
     return playerPositions;
 }
 
-int check_for_order(int playerPositions[], int pieceColor){
+int check_for_order(int playerPositions[], int pieceColor, int figureCount){
     int h_start, playerNumberStart;
     bool houseFieldIsOccupied = true;
     int fields = 0;
     h_start = BOARD_COLOR_DATA[pieceColor - 2][1];
     playerNumberStart = BOARD_COLOR_DATA[pieceColor - 2][4];
 
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+    for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
         if(playerPositions[i] < h_start && playerPositions[i] > -1){//if player on the field
             return false;
         }
@@ -71,14 +71,14 @@ int check_for_order(int playerPositions[], int pieceColor){
             fields++;
         }
     }
-    if(fields == BOARD_DATA[2]){//if all players in home
+    if(fields == figureCount){//if all players in home
         return true;
     }
 
     fields = 0;
 
-    for(int j = 1; j < BOARD_DATA[2]; j++){
-        for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+    for(int j = 1; j < figureCount; j++){
+        for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
             if(playerPositions[i] == h_start + BOARD_DATA[2] - j){
                 houseFieldIsOccupied = true;
                 fields++;
@@ -98,8 +98,8 @@ int check_for_order(int playerPositions[], int pieceColor){
     return true;
 }
 
-bool all_out(int playerPositions[], int playerNumberStart, int hm_pos){
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+bool all_out(int playerPositions[], int playerNumberStart, int hm_pos, int figureCount){
+    for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
         if(playerPositions[i] >= hm_pos){
             return false;
         }
@@ -107,29 +107,28 @@ bool all_out(int playerPositions[], int playerNumberStart, int hm_pos){
     return true;
 }
 
-bool is_player_movable(int playerPositions[], int pieceColor, int selectedPlayer, int n){
-    int hm_pos, playerNumberStart, startPoint, h_size;
+bool is_player_movable(int playerPositions[], int pieceColor, int selectedPlayer, int n, int figureCount){
+    int hm_pos, playerNumberStart, startPoint;
     
     hm_pos = BOARD_COLOR_DATA[pieceColor - 2][3];
     playerNumberStart = BOARD_COLOR_DATA[pieceColor - 2][4];
     startPoint = BOARD_COLOR_DATA[pieceColor - 2][2];
-    h_size = BOARD_DATA[2];
 
     int occupyingPlayer = occupied_by(move_n_fields(pieceColor, playerPositions[playerNumberStart + selectedPlayer], n), playerPositions);
     if(get_color(occupyingPlayer) == pieceColor){
         return false;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
+    else if(!all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
         return true;
     }
-    else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos) && pieceColor != get_color(occupyingPlayer)){;//need to move out of house
+    else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && pieceColor != get_color(occupyingPlayer)){;//need to move out of house
         if(playerPositions[playerNumberStart + selectedPlayer] >= hm_pos){
             return true;
         }
         return false;
     }
-    for(int i = 0; i < h_size; i++){
-        if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos) && playerPositions[playerNumberStart + i] == startPoint){
+    for(int i = 0; i < figureCount; i++){
+        if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + i] == startPoint){
             return false;
         }
     }
@@ -150,7 +149,7 @@ int *move_player(int playerPositions[], int pieceColor, int selectedPlayer, int 
     return playerPositions;
 }
 
-int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
+int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength, int figureCount){
     int occupyingPlayer, movableCounter, throwoutCounter, playerNumberStart;
     bool playersMovable[4] = {false, false, false, false};
     bool throwoutPossible[4] = {false, false, false, false};
@@ -158,8 +157,8 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
     throwoutCounter = 0;
     playerNumberStart = BOARD_COLOR_DATA[pieceColor - 2][4];
 
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
-        if(is_player_movable(playerPositions, pieceColor, i - playerNumberStart, n)){
+    for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
+        if(is_player_movable(playerPositions, pieceColor, i - playerNumberStart, n, figureCount)){
             playersMovable[i - playerNumberStart] = true;
             movableCounter++;
         }
@@ -171,7 +170,7 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
     }
 
     if(throwoutCounter > 0){
-        for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+        for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
             if(throwoutPossible[i - playerNumberStart] && rand() % (3 * (botStrength + 1)) != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
                 playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
@@ -180,7 +179,7 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
         }
     }
     else if(movableCounter > 0){
-        for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+        for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
             if(playersMovable[i - playerNumberStart] && rand() % (botStrength + 2) != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
                 if(throwoutPossible[i - playerNumberStart]){
@@ -194,7 +193,7 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
         }
     }
 
-    for(int i = playerNumberStart; i < playerNumberStart + BOARD_DATA[2]; i++){
+    for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
         if(playersMovable[i - playerNumberStart]){
             playerPositions[BOARD_DATA[0]] = playerPositions[i];
             playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
@@ -204,13 +203,13 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength){
     return playerPositions;
 }
 
-int check_for_win(int playerPositions[]){
+int check_for_win(int playerPositions[], int figureCount){
     for(int i = 0; i < BOARD_DATA[4]; i++){
-        for(int j = 0; j < BOARD_DATA[2]; j++){
+        for(int j = 0; j < figureCount; j++){
             if(!(playerPositions[i * BOARD_DATA[2] + j] > BOARD_DATA[1] && playerPositions[i * BOARD_DATA[2] + j] <= BOARD_DATA[1] + BOARD_DATA[0])){
                 break;
             }
-            if(j == BOARD_DATA[2] - 1){
+            if(j == figureCount - 1){
                 return j + 2;
             }
         }

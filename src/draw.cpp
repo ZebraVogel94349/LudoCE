@@ -1,9 +1,10 @@
-#include "graphx.h"
+#include <graphx.h>
+#include <keypadc.h>
+#include <tice.h>
 #include "gfx/colors.h"
 #include "const.h"
 #include "draw.hpp"
 #include "game.hpp"
-#include "const.h"
 
 void draw_field(int x, int y, int r, int color){
     gfx_SetColor(BLACK);

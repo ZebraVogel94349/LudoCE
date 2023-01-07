@@ -1,7 +1,7 @@
-#include "ui.hpp"
-#include "gfx/colors.h"
 #include <graphx.h>
 #include <keypadc.h>
+#include "ui.hpp"
+#include "gfx/colors.h"
 
 void draw_button(int x, int y, const char *label, bool enabled, bool selected){
     gfx_SetColor(BLACK);

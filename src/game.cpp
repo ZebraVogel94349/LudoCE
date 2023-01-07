@@ -1,9 +1,9 @@
-#include "graphx.h"
+#include <graphx.h>
+#include <keypadc.h>
+#include <tice.h>
 #include "gfx/colors.h"
 #include "const.h"
 #include "draw.hpp"
-#include "keypadc.h"
-#include <tice.h>
 
 int get_color(int playerNumber){
     if(playerNumber >= 0 && playerNumber < BOARD_DATA[0]){

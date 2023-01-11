@@ -168,7 +168,7 @@ int main(){
             gfx_FillScreen(BACKGROUND_YELLOW);
             draw_board();
             draw_player(playerPositions, 0, BOARD_DATA[0]);
-            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3])){
+            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){
                 for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[3]); i++){
                     if(currentPlayerSave != 0){
                         i = currentPlayerSave;
@@ -287,8 +287,17 @@ int main(){
                     }
                     if(r == 6){i--;}
                 }
+                if(int winner = check_for_win(playerPositions, gameSettings[3])){
+                    draw_win_screen(winner);
+                    while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
+                        prevkey1 = kb_Data[1];
+                        kb_Scan();
+                    }
+                    break;
+                }
             }
             status = 0;
+
             
             savearr[0] = VERSION;
             savearr[1] = gameSettings[0];
@@ -308,7 +317,7 @@ int main(){
         if(status == 3){
             gfx_FillScreen(BACKGROUND_YELLOW);
             draw_credits();
-            while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del && status == 3){
+            while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
                 prevkey1 = kb_Data[1];
                 kb_Scan();
             }

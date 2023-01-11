@@ -215,7 +215,7 @@ int check_for_win(int playerPositions[], int figureCount){
                 break;
             }
             if(j == figureCount - 1){
-                return j + 2;
+                return i + 2;
             }
         }
     }

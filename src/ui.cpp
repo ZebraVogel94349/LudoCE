@@ -64,6 +64,16 @@ void draw_new_game_menu(int selectedButton, int *gameSettings){
     gfx_SwapDraw();
 }
 
+void draw_win_screen(int winner){
+    const char* colors[4] = {"Blue", "Red", "Yellow", "Green"};
+    gfx_FillScreen(BACKGROUND_YELLOW);
+    gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" wins!")) / 2, 90);
+    gfx_PrintString(colors[winner - 2]);
+    gfx_PrintString(" wins!");
+    gfx_PrintStringXY("Press [del] to return to the main menu", 160 - gfx_GetStringWidth("Press [del] to return to the main menu") / 2, 130);
+    gfx_SwapDraw();
+}
+
 void draw_credits(){
     const char *text = "Lorem ipsum dolor sit amet, ...";
     gfx_PrintStringXY(text, 160 - gfx_GetStringWidth(text) / 2, 20);

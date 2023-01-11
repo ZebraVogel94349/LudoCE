@@ -12,7 +12,6 @@
 
 int main(){
     int savearr[26] = {-1};
-    bool loadEnabled = false;
     ti_var_t sv;
 
     srand(rtc_Time());
@@ -20,6 +19,8 @@ int main(){
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0);
     gfx_SetDrawBuffer();
     while(true){
+        int winner = 0;
+        bool loadEnabled = false;
         sv = ti_Open("LUDOSV","r");
 	    if(sv != 0){
             ti_Read(savearr,78,1,sv);
@@ -287,7 +288,7 @@ int main(){
                     }
                     if(r == 6){i--;}
                 }
-                if(int winner = check_for_win(playerPositions, gameSettings[3])){
+                if((winner = check_for_win(playerPositions, gameSettings[3]))){
                     draw_win_screen(winner);
                     while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
                         prevkey1 = kb_Data[1];
@@ -298,7 +299,6 @@ int main(){
             }
             status = 0;
 
-            
             savearr[0] = VERSION;
             savearr[1] = gameSettings[0];
             savearr[2] = gameSettings[3];
@@ -313,6 +313,10 @@ int main(){
             ti_Write(savearr,78,1,sv);
 	        ti_SetArchiveStatus(true, sv);
             ti_Close(sv);
+            
+            if(winner){
+                ti_Delete("LUDOSV");
+            }
         }
         if(status == 3){
             gfx_FillScreen(BACKGROUND_YELLOW);

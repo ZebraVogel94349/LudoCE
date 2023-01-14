@@ -45,7 +45,7 @@ void draw_main_menu(int selectedButton, bool loadDisabled){
     draw_button(160, 40, "Load Game", loadDisabled, selectedButton == 0);
     draw_button(160, 70, "New Game", true, selectedButton == 1);
     draw_button(160, 100, "Settings", true, selectedButton == 2);
-    draw_button(160, 130, "Credits", true, selectedButton == 3);
+    draw_button(160, 130, "About", true, selectedButton == 3);
     draw_button(160, 160, "Exit", true, selectedButton == 4);
     gfx_SwapDraw();
 }
@@ -74,7 +74,7 @@ void draw_win_screen(int winner){
     gfx_SwapDraw();
 }
 
-void draw_credits(){
+void draw_about(){
     const char *text = "Lorem ipsum dolor sit amet, ...";
     gfx_PrintStringXY(text, 160 - gfx_GetStringWidth(text) / 2, 20);
     gfx_SwapDraw();

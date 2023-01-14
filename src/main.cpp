@@ -320,7 +320,7 @@ int main(){
         }
         if(status == 3){
             gfx_FillScreen(BACKGROUND_YELLOW);
-            draw_credits();
+            draw_about();
             while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
                 prevkey1 = kb_Data[1];
                 kb_Scan();

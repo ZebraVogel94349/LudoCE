@@ -38,7 +38,7 @@ int main(){
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
         int gameSettingsBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {0, 2}};
-        int gameSettings[6] = {4, 4, 1, 4, 0, 0}; //Player count, Figure count, Bot Strength, Board Type
+        int gameSettings[4] = {4, 4, 1, 0}; //Player count, Figure count, Bot Strength, Board Type
         int r = 0;
         int again = 0;
         int playerTypes[4] = {2, 2, 2, 2};
@@ -125,11 +125,11 @@ int main(){
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
                     int playerCount = 0;
-                        for(int i = 0; i < BOARD_DATA[2];i++){ //assign player count value
-                            if(playerTypes[i] != 2){
-                                playerCount++;
-                            }
+                    for(int i = 0; i < BOARD_DATA[4];i++){ //assign player count value
+                        if(playerTypes[i] != 2){
+                            playerCount++;
                         }
+                    }
                     if(selectedEntry == 7 && playerCount > 0){ // start new game
                         gameSettings[0] = playerCount;
 

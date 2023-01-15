@@ -42,7 +42,7 @@ int main(){
         int gameSettings[4] = {4, 4, 1, 0}; //Player count, Figure count, Bot Strength, Board Type
         int r = 0;
         int again = 0;
-        int playerTypes[4] = {2, 2, 2, 2};
+        int playerTypes[6] = {2, 2, 2, 2, 2, 2};
         int selectedPlayer = 0;
         int oldSelection = 0;
         kb_key_t prevkey1 = kb_Data[1];
@@ -101,8 +101,13 @@ int main(){
             againSave = 0;
             selectedEntry = 0;
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
-                selectedEntry = menu_up_down(keycount, selectedEntry, 7, prevkey7);
-                if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 7){
+                selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                if(gameSettings[3] == 0 && selectedEntry > 6 && selectedEntry < 9){
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                }
+
+                if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 9){
                     if(selectedEntry == 0 && gameSettings[3] != 0){
                         gameSettings[3]--;
                     }
@@ -113,7 +118,7 @@ int main(){
                         playerTypes[selectedEntry - 3]--;
                     }
                 }
-                if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 7){
+                if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 9){
                     if(selectedEntry == 0 && gameSettings[3] != 1){
                         gameSettings[3]++;
                     }
@@ -131,7 +136,7 @@ int main(){
                             playerCount++;
                         }
                     }
-                    if(selectedEntry == 7 && playerCount > 0){ // start new game
+                    if(selectedEntry == 9 && playerCount > 0){ // start new game
                         gameSettings[0] = playerCount;
 
                         for(int i = 0; i < BOARD_DATA[2]; i++){ //Set position of all disabled colors to -1
@@ -295,7 +300,7 @@ int main(){
                     }
                     if(r == 6){i--;}
                 }
-                if((winner = check_for_win(playerPositions, gameSettings[3]))){
+                if((winner = check_for_win(playerPositions, gameSettings[1]))){
                     draw_win_screen(winner);
                     while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
                         prevkey1 = kb_Data[1];

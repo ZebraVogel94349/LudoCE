@@ -20,8 +20,11 @@ void draw_button(int x, int y, const char *label, bool enabled, bool selected){
     gfx_PrintStringXY(label, x - width / 2, y + 6);
 }
 
-void draw_selection_button(int x, int y, const char* label, const int number, const char *text, bool selected){
+void draw_selection_button(int x, int y, const char* label, const int number, const char *text, bool selected, bool enabled){
     int width = gfx_GetStringWidth("0");
+    if(!enabled){
+        gfx_SetTextFGColor(GREY);
+    }
     if(number > -1){
         gfx_SetTextXY(x - width / 2, y);
         gfx_PrintInt(number, 1);
@@ -62,16 +65,18 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(0, 0, 320, 240);
 
-    draw_selection_button(160, 20, "Board", gameSettings[3], "", selectedButton == 0);
-    draw_selection_button(160, 55, "Figure Count", gameSettings[1], "", selectedButton == 1);
-    draw_selection_button(160, 90, "Bot Strength", -1, botStrengthValues[gameSettings[2]], selectedButton == 2);
+    draw_selection_button(160, 20, "Board", gameSettings[3], "", selectedButton == 0, true);
+    draw_selection_button(160, 50, "Figure Count", gameSettings[1], "", selectedButton == 1, true);
+    draw_selection_button(160, 80, "Bot Strength", -1, botStrengthValues[gameSettings[2]], selectedButton == 2, true);
 
-    draw_selection_button(105, 130, "", -2, playerNames[playerTypes[0]], selectedButton == 3);
-    draw_selection_button(215, 130, "", -3, playerNames[playerTypes[1]], selectedButton == 4);
-    draw_selection_button(105, 170, "", -4, playerNames[playerTypes[2]], selectedButton == 5);
-    draw_selection_button(215, 170, "", -5, playerNames[playerTypes[3]], selectedButton == 6);
+    draw_selection_button(105, 120, "", -2, playerNames[playerTypes[0]], selectedButton == 3, true);
+    draw_selection_button(215, 120, "", -3, playerNames[playerTypes[1]], selectedButton == 4, true);
+    draw_selection_button(105, 160, "", -4, playerNames[playerTypes[2]], selectedButton == 5, true);
+    draw_selection_button(215, 160, "", -5, playerNames[playerTypes[3]], selectedButton == 6, true);
+    draw_selection_button(105, 200, "", -6, playerNames[playerTypes[4]], selectedButton == 7, gameSettings[3] == 1);
+    draw_selection_button(215, 200, "", -7, playerNames[playerTypes[5]], selectedButton == 8, gameSettings[3] == 1);
 
-    draw_button(160, 210, "Start", true, selectedButton == 7);
+    draw_button(160, 215, "Start", true, selectedButton == 9);
     gfx_SwapDraw();
 }
 

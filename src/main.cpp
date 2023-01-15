@@ -134,8 +134,12 @@ int main(){
                     if(selectedEntry == 7 && playerCount > 0){ // start new game
                         gameSettings[0] = playerCount;
 
-                        for(int i = (gameSettings[0]) * 4; i < BOARD_DATA[0]; i++){ //Set position of all disabled colors to -1
-                          playerPositions[i] = -1;
+                        for(int i = 0; i < BOARD_DATA[2]; i++){ //Set position of all disabled colors to -1
+                            if(playerTypes[i] == 2){
+                                for(int j = 0; j < BOARD_DATA[2]; j++){
+                                    playerPositions[j + i * BOARD_DATA[2]] = -1;
+                                }
+                            }
                         }
 
                         for(int i = 0; i < (gameSettings[0]) * 4; i++){ //Set position of all disabled figures to -1
@@ -185,7 +189,7 @@ int main(){
                     }
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
-                        draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                         for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1]); k++){
                             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1)){//wait for 2nd to roll the die
                                 prevkey1 = kb_Data[1];
@@ -195,7 +199,7 @@ int main(){
                                 break;
                             }
                             r = rand() % 6 + 1;
-                            draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
                             kb_Scan();
@@ -210,14 +214,14 @@ int main(){
                             if(selectedPlayer != -1){
                                 while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){//wait for 2nd to move the player
                                     // draw selections
-                                    draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                    draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                                     draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], r), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + oldSelection], r));
                                     draw_player_selection(playerPositions, (i - 2) * BOARD_DATA[2] + selectedPlayer, (i - 2) * BOARD_DATA[2] + oldSelection);
                                     
                                     if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
                                         *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
-                                        draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                         break;
                                     }
@@ -273,7 +277,7 @@ int main(){
                         for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1]); k++){
                             r = rand() % 6 + 1;
                             *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[2], gameSettings[1]);
-                            draw_everything(playerTypes, gameSettings, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
                             
                             msleep(500);
                             

@@ -38,9 +38,9 @@ void draw_selection_button(int x, int y, const char* label, const int number, co
     gfx_PrintStringXY(label, x - gfx_GetStringWidth(label) / 2, y - 15);
     if(number <= -2){
         gfx_SetColor(BLACK);
-        gfx_Rectangle_NoClip(x - 21, y - 16, 42, 12);
+        gfx_Rectangle_NoClip(x - 21, y - 21, 42, 12);
         gfx_SetColor(number * -1);
-        gfx_FillRectangle_NoClip(x - 20 , y - 15, 40, 10);
+        gfx_FillRectangle_NoClip(x - 20 , y - 20, 40, 10);
     }
 }
 
@@ -68,8 +68,8 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
 
     draw_selection_button(105, 130, "", -2, playerNames[playerTypes[0]], selectedButton == 3);
     draw_selection_button(215, 130, "", -3, playerNames[playerTypes[1]], selectedButton == 4);
-    draw_selection_button(105, 160, "", -4, playerNames[playerTypes[2]], selectedButton == 5);
-    draw_selection_button(215, 160, "", -5, playerNames[playerTypes[3]], selectedButton == 6);
+    draw_selection_button(105, 170, "", -4, playerNames[playerTypes[2]], selectedButton == 5);
+    draw_selection_button(215, 170, "", -5, playerNames[playerTypes[3]], selectedButton == 6);
 
     draw_button(160, 210, "Start", true, selectedButton == 7);
     gfx_SwapDraw();

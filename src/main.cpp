@@ -338,10 +338,13 @@ int main(){
             }
         }
         if(status == 3){
-            gfx_FillScreen(BACKGROUND_YELLOW);
-            draw_about();
+            int page = 0;
             while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
+                gfx_FillScreen(BACKGROUND_YELLOW);
+                draw_about(page);
+                page = menu_up_down(0, page, 2, prevkey7);
                 prevkey1 = kb_Data[1];
+                prevkey7 = kb_Data[7];
                 kb_Scan();
             }
             status = 0;

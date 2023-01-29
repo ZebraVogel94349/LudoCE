@@ -90,9 +90,30 @@ void draw_win_screen(int winner){
     gfx_SwapDraw();
 }
 
-void draw_about(){
-    const char *text = "Lorem ipsum dolor sit amet, ...";
-    gfx_PrintStringXY(text, 160 - gfx_GetStringWidth(text) / 2, 20);
+void draw_about(int page){
+    const char *p1l1 = "Lorem ipsum dolor sit amet, ...";
+    const char *p2l1 = "consetetur sadipscing elitr, sed diam ...";
+    const char *p3l1 = "nonumy eirmod tempor invidunt ut labore ...";
+    gfx_SetTextXY(295, 5);
+    gfx_PrintInt(page + 1, 1);
+    gfx_PrintString("/3");
+    if(page != 0){
+        gfx_PrintStringXY("\x1e", 5, 5);
+    }
+    if(page != 2){
+        gfx_PrintStringXY("\x1f", 5, 230);
+    }
+
+    if(page == 0){
+        gfx_PrintStringXY(p1l1, 5, 20);
+    }
+    else if(page == 1){
+        gfx_PrintStringXY(p2l1, 5, 20);
+    }
+    else if(page == 2){
+        gfx_PrintStringXY(p3l1, 5, 20);
+    }
+    
     gfx_SwapDraw();
 }
 

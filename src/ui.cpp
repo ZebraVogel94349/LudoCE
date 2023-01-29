@@ -22,6 +22,7 @@ void draw_button(int x, int y, const char *label, bool enabled, bool selected){
 
 void draw_selection_button(int x, int y, const char* label, const int number, const char *text, bool selected, bool enabled){
     int width = gfx_GetStringWidth("0");
+    gfx_SetTextFGColor(BLACK);
     if(!enabled){
         gfx_SetTextFGColor(GREY);
     }
@@ -76,7 +77,7 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     draw_selection_button(105, 200, "", -6, playerNames[playerTypes[4]], selectedButton == 7, gameSettings[3] == 1);
     draw_selection_button(215, 200, "", -7, playerNames[playerTypes[5]], selectedButton == 8, gameSettings[3] == 1);
 
-    draw_button(160, 215, "Start", true, selectedButton == 9);
+    draw_button(160, 215, "Start", gameSettings[0] > 0, selectedButton == 9);
     gfx_SwapDraw();
 }
 

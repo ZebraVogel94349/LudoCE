@@ -9,7 +9,6 @@
 #include "ui.hpp"
 #include "draw.hpp"
 #include "game.hpp"
-#include "debug.h"
 
 int main(){
     int savearr[26] = {-1};
@@ -42,8 +41,8 @@ int main(){
         int winner = 0;
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
-        int gameSettingsBorder[5][2] = {{1, 4}, {0, 4}, {0, 4}, {1, 4}, {0, 2}};
-        int gameSettings[4] = {4, 4, 1, 0}; //Player count, Figure count, Bot Strength, Board Type
+        int gameSettingsBorder[5][2] = {{1, 4}, {1, 4}, {0, 2}, {0, 1}};
+        int gameSettings[4] = {0, 4, 1, 0}; //Player count, Figure count, Bot Strength, Board Type
         int r = 0;
         int again = 0;
         int playerTypes[6] = {2, 2, 2, 2, 2, 2};
@@ -106,8 +105,23 @@ int main(){
             int selectedEntry = 0;
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
-                if(gameSettings[3] == 0 && selectedEntry > 6 && selectedEntry < 9){
+
+                int playerCount = 0;
+                for(int i = 0; i < BOARD_DATA[4];i++){ //assign player count value
+                    if(playerTypes[i] != 2){
+                        playerCount++;
+                    }
+                }
+                gameSettings[0] = playerCount;
+                
+                if(gameSettings[0] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu up
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                }
+                if(gameSettings[3] == 0 && selectedEntry > 6 && selectedEntry < 9){ //skip 6 board colors
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
+                }
+                if(gameSettings[0] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu down
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
                 }
 
@@ -134,15 +148,7 @@ int main(){
                     }
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
-                    int playerCount = 0;
-                    for(int i = 0; i < BOARD_DATA[4];i++){ //assign player count value
-                        if(playerTypes[i] != 2){
-                            playerCount++;
-                        }
-                    }
                     if(selectedEntry == 9 && playerCount > 0){ // start new game
-                        gameSettings[0] = playerCount;
-
                         for(int i = 0; i < BOARD_DATA[2]; i++){ //Set position of all disabled colors to -1
                             if(playerTypes[i] == 2){
                                 for(int j = 0; j < BOARD_DATA[2]; j++){

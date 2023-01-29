@@ -64,7 +64,7 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     const char* botStrengthValues[3] = {"Easy", "Normal", "Hard"};
     const char* playerNames[3] = {"Player", "CPU", "Disabled"};
     gfx_SetColor(BACKGROUND_YELLOW);
-    gfx_FillRectangle_NoClip(0, 0, 320, 240);
+    gfx_FillRectangle_NoClip(50, 0, 220, 235);
 
     draw_selection_button(160, 20, "Board", gameSettings[3], "", selectedButton == 0, true);
     draw_selection_button(160, 50, "Figure Count", gameSettings[1], "", selectedButton == 1, true);

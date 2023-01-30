@@ -1,7 +1,7 @@
 #ifndef CONST_H
 #define CONST_H
 
-const int VERSION = 1;
+const int VERSION = 2;
 
 const int LEFT_MARGIN = 44;
 const int TOP_MARGIN = 5;

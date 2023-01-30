@@ -11,7 +11,7 @@
 #include "game.hpp"
 
 int main(){
-    int savearr[26] = {-1};
+    int savearr[27] = {-1};
     ti_var_t sv;
     int previousSelectedEntry = 0;
 
@@ -23,7 +23,7 @@ int main(){
         bool loadEnabled = false;
         sv = ti_Open("LUDOSV","r");
 	    if(sv != 0){
-            ti_Read(savearr,78,1,sv);
+            ti_Read(savearr,81,1,sv);
             ti_Close(sv);
             loadEnabled = true;
         }
@@ -32,17 +32,18 @@ int main(){
         }
         if(savearr[0] != -1 && savearr[0] != VERSION){//Delete the saved game if the version differs
             ti_Delete("LUDOSV");
-            for(int i = 0; i < 26; i++){
+            for(int i = 0; i < 27; i++){
                 savearr[i] = 0;
             }
             loadEnabled = false;
+            previousSelectedEntry = 1;
         }
 
         int winner = 0;
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
-        int gameSettingsBorder[5][2] = {{1, 4}, {1, 4}, {0, 2}, {0, 1}};
-        int gameSettings[4] = {0, 4, 1, 0}; //Player count, Figure count, Bot Strength, Board Type
+        int gameSettingsBorder[3] = {1, 3, 2};
+        int gameSettings[4] = {0, 3, 1, 0}; //Board Type, Figure count, Bot Strength, Player count
         int r = 0;
         int again = 0;
         int playerTypes[6] = {2, 2, 2, 2, 2, 2};
@@ -51,8 +52,8 @@ int main(){
         kb_key_t prevkey1 = kb_Data[1];
         kb_key_t prevkey7 = kb_Data[7];
         int keycount = 0;
-        int currentPlayerSave = savearr[4];
-        int againSave = savearr[5];
+        int currentPlayerSave = savearr[5];
+        int againSave = savearr[6];
         
         gfx_FillScreen(BACKGROUND_YELLOW);
         gfx_SwapDraw();
@@ -69,11 +70,12 @@ int main(){
                         gameSettings[0] = savearr[1];
                         gameSettings[1] = savearr[2];
                         gameSettings[2] = savearr[3];
+                        gameSettings[3] = savearr[4];
                         for(int i = 0; i < BOARD_DATA[2]; i++){
-                            playerTypes[i] = savearr[6 + i];
+                            playerTypes[i] = savearr[7 + i];
                         }
                         for(int i = 0; i < BOARD_DATA[0]; i++){
-                            playerPositions[i] = savearr[6 + BOARD_DATA[2] + i];
+                            playerPositions[i] = savearr[7 + BOARD_DATA[2] + i];
                         }
                         status = 6;
                         break;
@@ -112,43 +114,38 @@ int main(){
                         playerCount++;
                     }
                 }
-                gameSettings[0] = playerCount;
+                gameSettings[3] = playerCount;
                 
-                if(gameSettings[0] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu up
+                if(gameSettings[3] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu up
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
                 }
-                if(gameSettings[3] == 0 && selectedEntry > 6 && selectedEntry < 9){ //skip 6 board colors
+                if(gameSettings[0] == 0 && selectedEntry > 6 && selectedEntry < 9){ //skip 6 board colors
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
                 }
-                if(gameSettings[0] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu down
+                if(gameSettings[3] == 0 && selectedEntry == 9){ // skip start button if playercount < 1 and menu down
                     selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
                 }
 
                 if(kb_Data[7] == kb_Left && (prevkey7 != kb_Left || keycount % 10 == 9) && selectedEntry < 9){
-                    if(selectedEntry == 0 && gameSettings[3] != 0){
-                        gameSettings[3]--;
+                    if(selectedEntry < 3){
+                        gameSettings[selectedEntry] = (gameSettings[selectedEntry] + gameSettingsBorder[selectedEntry]) % (gameSettingsBorder[selectedEntry] + 1);
                     }
-                    else if(selectedEntry != 0 && selectedEntry < 3 && gameSettings[selectedEntry] != gameSettingsBorder[selectedEntry][0]){
-                        gameSettings[selectedEntry]--;
-                    }
-                    else if(selectedEntry >= 3 && playerTypes[selectedEntry - 3] != 0){
-                        playerTypes[selectedEntry - 3]--;
+                    else if(selectedEntry >= 3){
+                        playerTypes[selectedEntry - 3] = (playerTypes[selectedEntry - 3] + 2) % 3;
                     }
                 }
                 if(kb_Data[7] == kb_Right && (prevkey7 != kb_Right || keycount % 10 == 9) && selectedEntry < 9){
-                    if(selectedEntry == 0 && gameSettings[3] != 1){
-                        gameSettings[3]++;
+                    if(selectedEntry < 3){
+                        gameSettings[selectedEntry] = (gameSettings[selectedEntry] + 1) % (gameSettingsBorder[selectedEntry] + 1);
                     }
-                    else if(selectedEntry != 0 && selectedEntry < 3 && gameSettings[selectedEntry] != gameSettingsBorder[selectedEntry][1]){
-                        gameSettings[selectedEntry]++;
-                    }
-                    else if(selectedEntry >= 3 && playerTypes[selectedEntry - 3] != 2){
-                        playerTypes[selectedEntry - 3]++;
+                    else if(selectedEntry >= 3){
+                        playerTypes[selectedEntry - 3] = (playerTypes[selectedEntry - 3] + 4) % 3;
                     }
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
-                    if(selectedEntry == 9 && playerCount > 0){ // start new game
+                    if(selectedEntry == 9){ // start new game
+                        gameSettings[1]++;
                         for(int i = 0; i < BOARD_DATA[2]; i++){ //Set position of all disabled colors to -1
                             if(playerTypes[i] == 2){
                                 for(int j = 0; j < BOARD_DATA[2]; j++){
@@ -157,7 +154,7 @@ int main(){
                             }
                         }
 
-                        for(int i = 0; i < (gameSettings[0]) * 4; i++){ //Set position of all disabled figures to -1
+                        for(int i = 0; i < (gameSettings[3]) * 4; i++){ //Set position of all disabled figures to -1
                             if(i % BOARD_DATA[2] >= gameSettings[1]){
                                 playerPositions[i] = -1;
                             }         
@@ -282,11 +279,11 @@ int main(){
                             if(check_for_order(playerPositions, i, gameSettings[1]) && again < 3){
                                 again++;
                             }
-                            savearr[4] = i;
+                            savearr[5] = i;
                             if(k + 1 == again){//increase the saved current player by 1 if quit at the end of the current's player move
-                                savearr[4]++;
+                                savearr[5]++;
                             }
-                            savearr[5] = again;
+                            savearr[6] = again;
                         }
                     }
                     else if(playerTypes[i - 2] == 1){
@@ -302,11 +299,11 @@ int main(){
                             if(check_for_order(playerPositions, i, gameSettings[1]) && again < 3){
                                 again++;
                             } 
-                            savearr[4] = i;
+                            savearr[5] = i;
                             if(k + 1 == again){//increase the saved current player by 1 if quit at the end of the current's player move
-                                savearr[4]++;
+                                savearr[5]++;
                             }
-                            savearr[5] = again;
+                            savearr[6] = again;
                         }
                     }
                     if(r == 6){i--;}
@@ -327,14 +324,15 @@ int main(){
             savearr[1] = gameSettings[0];
             savearr[2] = gameSettings[1];
             savearr[3] = gameSettings[2];
+            savearr[4] = gameSettings[3];
             for(int i = 0; i < BOARD_DATA[2]; i++){
-                savearr[6 + i] = playerTypes[i];
+                savearr[7 + i] = playerTypes[i];
             }
             for(int i = 0; i < BOARD_DATA[0]; i++){
-                savearr[6 + BOARD_DATA[2] + i] = playerPositions[i];
+                savearr[7 + BOARD_DATA[2] + i] = playerPositions[i];
             }
 	        sv = ti_Open("LUDOSV","w");
-            ti_Write(savearr,78,1,sv);
+            ti_Write(savearr,81,1,sv);
 	        ti_SetArchiveStatus(true, sv);
             ti_Close(sv);
             

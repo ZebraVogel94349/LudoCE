@@ -29,7 +29,8 @@ void draw_selection_button(int x, int y, const char* label, const int number, co
     if(number > -1){
         gfx_SetTextXY(x - width / 2, y);
         gfx_PrintInt(number, 1);
-    }else{
+    }
+    else{
         width = gfx_GetStringWidth(text);
         gfx_PrintStringXY(text, x - width / 2, y);
     }
@@ -63,21 +64,22 @@ void draw_main_menu(int selectedButton, bool loadDisabled){
 void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     const char* botStrengthValues[3] = {"Easy", "Normal", "Hard"};
     const char* playerNames[3] = {"Player", "CPU", "Disabled"};
+    const char* boardNames[2] = {"4 Players", "6 Players"};
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(50, 0, 220, 235);
 
-    draw_selection_button(160, 20, "Board", gameSettings[3], "", selectedButton == 0, true);
-    draw_selection_button(160, 50, "Figure Count", gameSettings[1], "", selectedButton == 1, true);
+    draw_selection_button(160, 20, "Board", -1, boardNames[gameSettings[0]], selectedButton == 0, true);
+    draw_selection_button(160, 50, "Figure Count", gameSettings[1] + 1, "", selectedButton == 1, true);
     draw_selection_button(160, 80, "Bot Strength", -1, botStrengthValues[gameSettings[2]], selectedButton == 2, true);
 
     draw_selection_button(105, 120, "", -2, playerNames[playerTypes[0]], selectedButton == 3, true);
     draw_selection_button(215, 120, "", -3, playerNames[playerTypes[1]], selectedButton == 4, true);
     draw_selection_button(105, 160, "", -4, playerNames[playerTypes[2]], selectedButton == 5, true);
     draw_selection_button(215, 160, "", -5, playerNames[playerTypes[3]], selectedButton == 6, true);
-    draw_selection_button(105, 200, "", -6, playerNames[playerTypes[4]], selectedButton == 7, gameSettings[3] == 1);
-    draw_selection_button(215, 200, "", -7, playerNames[playerTypes[5]], selectedButton == 8, gameSettings[3] == 1);
+    draw_selection_button(105, 200, "", -6, playerNames[playerTypes[4]], selectedButton == 7, gameSettings[0] == 1);
+    draw_selection_button(215, 200, "", -7, playerNames[playerTypes[5]], selectedButton == 8, gameSettings[0] == 1);
 
-    draw_button(160, 215, "Start", gameSettings[0] > 0, selectedButton == 9);
+    draw_button(160, 215, "Start", gameSettings[3] > 0, selectedButton == 9);
     gfx_SwapDraw();
 }
 
@@ -120,20 +122,10 @@ void draw_about(int page){
 
 int menu_up_down(int keycount, int selectedEntry, int lastEntry, kb_key_t prevkey7){
     if(kb_Data[7] == kb_Down && (prevkey7 != kb_Down || keycount % 10 == 9)){
-        if(selectedEntry == lastEntry){
-            selectedEntry = 0;
-        }
-        else{
-            selectedEntry++;
-        }
+        selectedEntry = (selectedEntry + 1) % (lastEntry + 1);
     }
     if(kb_Data[7] == kb_Up && (prevkey7 != kb_Up || keycount % 10 == 9)){
-        if(selectedEntry == 0){
-            selectedEntry = lastEntry;
-        }
-        else{
-            selectedEntry--;
-        }
+        selectedEntry = (selectedEntry + lastEntry) % (lastEntry + 1);
     }
     return selectedEntry;
 }

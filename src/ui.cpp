@@ -83,12 +83,35 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     gfx_SwapDraw();
 }
 
-void draw_win_screen(int winner){
+void draw_win_screen(int winner, int place){
     const char* colors[6] = {"Blue", "Red", "Yellow", "Green", "Purple", "Cyan"};
     gfx_FillScreen(BACKGROUND_YELLOW);
-    gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" wins!")) / 2, 90);
-    gfx_PrintString(colors[winner - 2]);
-    gfx_PrintString(" wins!");
+    if(place == 1){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" wins!")) / 2, 90);
+        gfx_PrintString(colors[winner - 2]);
+        gfx_PrintString(" wins!");
+    }
+    else if(place == 2){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" is 2nd!")) / 2, 90);
+        gfx_PrintString(colors[winner - 2]);
+        gfx_PrintString(" is 2nd!");
+    }
+    else if(place == 3){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" is 3rd!")) / 2, 90);
+        gfx_PrintString(colors[winner - 2]);
+        gfx_PrintString(" is 3rd!");
+    }
+    else if(place == 4){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" is 4th")) / 2, 90);
+        gfx_PrintString(colors[winner - 2]);
+        gfx_PrintString(" is 4th");
+    }
+    else if(place == 5){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" is 5th")) / 2, 90);
+        gfx_PrintString(colors[winner - 2]);
+        gfx_PrintString(" is 5th");
+    }
+    
     gfx_PrintStringXY("Press [del] to return to the main menu", 160 - gfx_GetStringWidth("Press [del] to return to the main menu") / 2, 130);
     gfx_PrintStringXY("Press [2nd] to continue", 160 - gfx_GetStringWidth("Press [2nd] to continue") / 2, 160);
     gfx_SwapDraw();

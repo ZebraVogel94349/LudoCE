@@ -10,6 +10,8 @@
 #include "draw.hpp"
 #include "game.hpp"
 
+#include <debug.h>
+
 int main(){
     int savearr[27] = {-1};
     ti_var_t sv;
@@ -311,8 +313,8 @@ int main(){
                     if(r == 6){i--;}
                     if((winner = check_for_win(playerPositions, gameSettings[1]))){
                         place++;
-                        draw_win_screen(winner);
-                        while(!kb_Clear){
+                        draw_win_screen(winner, place);
+                        while(kb_Data[6] != kb_Clear){
                             prevkey1 = kb_Data[1];
                             kb_Scan();
                             if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
@@ -330,12 +332,13 @@ int main(){
                                     gfx_FillScreen(BACKGROUND_YELLOW);
                                     draw_board();
                                     draw_player(playerPositions, 0, BOARD_DATA[0]);
+                                    r = 0;
                                 }else{
                                     exit = true;
                                 }
                                 break;
                             }
-                            else if(kb_Data[1] == kb_Del || kb_Data[6] == kb_Clear){
+                            else if(kb_Data[1] == kb_Del){
                                 exit = true;
                                 break;
                             }

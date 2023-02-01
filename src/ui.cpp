@@ -84,12 +84,13 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
 }
 
 void draw_win_screen(int winner){
-    const char* colors[6] = {"Blue", "Red", "Yellow", "Green, Purple, Cyan"};
+    const char* colors[6] = {"Blue", "Red", "Yellow", "Green", "Purple", "Cyan"};
     gfx_FillScreen(BACKGROUND_YELLOW);
     gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[winner - 2]) + gfx_GetStringWidth(" wins!")) / 2, 90);
     gfx_PrintString(colors[winner - 2]);
     gfx_PrintString(" wins!");
     gfx_PrintStringXY("Press [del] to return to the main menu", 160 - gfx_GetStringWidth("Press [del] to return to the main menu") / 2, 130);
+    gfx_PrintStringXY("Press [2nd] to continue", 160 - gfx_GetStringWidth("Press [2nd] to continue") / 2, 160);
     gfx_SwapDraw();
 }
 

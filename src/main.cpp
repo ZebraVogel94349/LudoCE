@@ -43,6 +43,7 @@ int main(){
 
         int winner = 0;
         int place = 0;
+        int winBoard[6] = {0, 0, 0, 0, 0, 0}; // 1., 2., 3., 4., 5., 6.
         bool exit = false;
         int status = 0;
         int playerPositions[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
@@ -312,8 +313,15 @@ int main(){
                     }
                     if(r == 6){i--;}
                     if((winner = check_for_win(playerPositions, gameSettings[1]))){
+                        winBoard[place] = winner;
                         place++;
-                        draw_win_screen(winner, place);
+
+                        if(gameSettings[3] - place <= 1){
+                            draw_win_screen(winner, place, (14 + gameSettings[0] * 13) - (winBoard[0] + winBoard[1] + winBoard[2] + winBoard[3] + winBoard[4] + winBoard[5]));
+                        }else{
+                            draw_win_screen(winner, place, 0);
+                        }
+
                         while(kb_Data[6] != kb_Clear){
                             prevkey1 = kb_Data[1];
                             kb_Scan();

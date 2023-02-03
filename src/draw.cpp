@@ -2,9 +2,32 @@
 #include <keypadc.h>
 #include <tice.h>
 #include "gfx/colors.h"
+#include "gfx/gfx.h"
 #include "const.h"
 #include "draw.hpp"
 #include "game.hpp"
+
+void start_die_animation(int n){
+    if(n == 1){
+        gfx_Sprite_NoClip(die_1, 150, 110);
+    }
+    else if(n == 2){
+        gfx_Sprite_NoClip(die_2, 150, 110);
+    }
+    else if(n == 3){   
+        gfx_Sprite_NoClip(die_3, 150, 110);
+    }
+    else if(n == 4){
+        gfx_Sprite_NoClip(die_4, 150, 110);
+    }
+    else if(n == 5){
+        gfx_Sprite_NoClip(die_5, 150, 110);
+    }
+    else if(n == 6){
+        gfx_Sprite_NoClip(die_6, 150, 110);
+    }
+    gfx_BlitBuffer();
+}
 
 void draw_field(int x, int y, int r, int color){
     gfx_SetColor(BLACK);
@@ -67,7 +90,7 @@ void draw_name(int playerTypes[], int playerIndicator){
     }
 }
 
-void draw_everything(int playerTypes[], int playerPositions[], int toClear, int number, int playerIndicator){
+void draw_everything(int playerTypes[], int playerPositions[], int toClear, int playerIndicator){
     if(occupied_by(toClear, playerPositions) == -1){
         draw_field_pos(toClear);
     }
@@ -75,27 +98,8 @@ void draw_everything(int playerTypes[], int playerPositions[], int toClear, int 
     draw_name(playerTypes, playerIndicator);
     gfx_SetColor(BACKGROUND_YELLOW);
     gfx_FillRectangle_NoClip(5,5,20,20);
-    if(number != 0){
-        gfx_SetTextFGColor(BLACK);
-        gfx_SetTextXY(6,6);
-        gfx_PrintInt(number, 1);
-    }
     
-    gfx_SwapDraw();
-
-    if(occupied_by(toClear, playerPositions) == -1){
-        draw_field_pos(toClear);
-    }
-    draw_player(playerPositions, 0, BOARD_DATA[0]);
-    draw_name(playerTypes, playerIndicator);
-    draw_field_pos(toClear);
-    gfx_SetColor(BACKGROUND_YELLOW);
-    gfx_FillRectangle_NoClip(5,5,20,20);
-    if(number != 0){
-        gfx_SetTextFGColor(BLACK);
-        gfx_SetTextXY(6,6);
-        gfx_PrintInt(number, 1);
-    }
+    gfx_BlitBuffer();
 }
 
 void draw_player_selection(int *playerPositions, int selectedPlayer, int oldSelection){

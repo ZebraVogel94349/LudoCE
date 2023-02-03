@@ -15,9 +15,23 @@ palettes:
       - color: {index: 11, r: 235, g: 170, b: 10}
     images: automatic
 
+converts:
+  - name: myimages
+    palette: palette_gfx
+    transparent-color-index: 0
+    images:
+      - die_1.png
+      - die_2.png
+      - die_3.png
+      - die_4.png
+      - die_5.png
+      - die_6.png
+      
 
 outputs:
   - type: c
     include-file: gfx.h
     palettes:
       - palette_gfx
+    converts:
+      - myimages

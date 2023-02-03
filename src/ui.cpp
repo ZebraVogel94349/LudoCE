@@ -58,7 +58,7 @@ void draw_main_menu(int selectedButton, bool loadDisabled){
     draw_button(160, 100, "Settings", true, selectedButton == 2);
     draw_button(160, 130, "About", true, selectedButton == 3);
     draw_button(160, 160, "Exit", true, selectedButton == 4);
-    gfx_SwapDraw();
+    gfx_BlitBuffer();
 }
 
 void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
@@ -80,7 +80,7 @@ void draw_new_game_menu(int selectedButton, int *gameSettings, int*playerTypes){
     draw_selection_button(215, 200, "", -7, playerNames[playerTypes[5]], selectedButton == 8, gameSettings[0] == 1);
 
     draw_button(160, 215, "Start", gameSettings[3] > 0, selectedButton == 9);
-    gfx_SwapDraw();
+    gfx_BlitBuffer();
 }
 
 void draw_win_screen(int winner, int place, int lastPlace){
@@ -112,7 +112,7 @@ void draw_win_screen(int winner, int place, int lastPlace){
         gfx_PrintString(" is 5th");
     }
 
-    if(lastPlace > 0){
+    if(lastPlace){
         gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[lastPlace - 2]) + gfx_GetStringWidth(" is last")) / 2, 90);
         gfx_PrintString(colors[lastPlace - 2]);
         gfx_PrintString(" is last");
@@ -120,7 +120,7 @@ void draw_win_screen(int winner, int place, int lastPlace){
     
     gfx_PrintStringXY("Press [del] to return to the main menu", 160 - gfx_GetStringWidth("Press [del] to return to the main menu") / 2, 130);
     gfx_PrintStringXY("Press [2nd] to continue", 160 - gfx_GetStringWidth("Press [2nd] to continue") / 2, 160);
-    gfx_SwapDraw();
+    gfx_BlitBuffer();
 }
 
 void draw_about(int page){
@@ -147,7 +147,7 @@ void draw_about(int page){
         gfx_PrintStringXY(p3l1, 5, 20);
     }
     
-    gfx_SwapDraw();
+    gfx_BlitBuffer();
 }
 
 int menu_up_down(int keycount, int selectedEntry, int lastEntry, kb_key_t prevkey7){

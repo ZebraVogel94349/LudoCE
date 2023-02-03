@@ -61,8 +61,7 @@ int main(){
         int againSave = savearr[6];
         
         gfx_FillScreen(BACKGROUND_YELLOW);
-        gfx_SwapDraw();
-        gfx_FillScreen(BACKGROUND_YELLOW);
+        gfx_BlitBuffer();
         if(status == 0){//Main Menu
             int selectedEntry = previousSelectedEntry;
             while(kb_Data[6] != kb_Clear){
@@ -185,16 +184,12 @@ int main(){
         }
 
         if(status == 6){
+            gfx_FillScreen(BACKGROUND_YELLOW);
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !exit){
-                gfx_FillScreen(BACKGROUND_YELLOW);
                 draw_board();
                 draw_player(playerPositions, 0, BOARD_DATA[0]);
-        
-                gfx_SwapDraw();
+                gfx_BlitBuffer();
 
-                gfx_FillScreen(BACKGROUND_YELLOW);
-                draw_board();
-                draw_player(playerPositions, 0, BOARD_DATA[0]);
                 for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1]) && !exit; i++){
                     if(currentPlayerSave != 0){
                         i = currentPlayerSave;
@@ -207,8 +202,14 @@ int main(){
                     }
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
-                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
                         for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1]); k++){
+                            if(selectedPlayer != -1){
+                                gfx_SetColor(BACKGROUND_YELLOW);
+                                gfx_FillRectangle_NoClip(150, 110, 20, 20); //Remove the old die
+                                gfx_BlitBuffer();
+                            }
+
                             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1)){//wait for 2nd to roll the die
                                 prevkey1 = kb_Data[1];
                                 kb_Scan();
@@ -217,7 +218,8 @@ int main(){
                                 break;
                             }
                             r = rand() % 6 + 1;
-                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
+                            start_die_animation(r);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
                             kb_Scan();
@@ -232,14 +234,14 @@ int main(){
                             if(selectedPlayer != -1){
                                 while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){//wait for 2nd to move the player
                                     // draw selections
-                                    draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                    draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
                                     draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], r), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + oldSelection], r));
                                     draw_player_selection(playerPositions, (i - 2) * BOARD_DATA[2] + selectedPlayer, (i - 2) * BOARD_DATA[2] + oldSelection);
                                     
                                     if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
                                         *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
-                                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                         break;
                                     }
@@ -295,7 +297,7 @@ int main(){
                         for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1]); k++){
                             r = rand() % 6 + 1;
                             *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[2], gameSettings[1]);
-                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], r, i);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
                             
                             msleep(500);
                             
@@ -335,11 +337,7 @@ int main(){
                                     draw_board();
                                     draw_player(playerPositions, 0, BOARD_DATA[0]);
         
-                                    gfx_SwapDraw();
-
-                                    gfx_FillScreen(BACKGROUND_YELLOW);
-                                    draw_board();
-                                    draw_player(playerPositions, 0, BOARD_DATA[0]);
+                                    gfx_BlitBuffer();
                                     r = 0;
                                 }else{
                                     exit = true;

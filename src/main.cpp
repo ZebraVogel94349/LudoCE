@@ -107,7 +107,7 @@ int main(){
             currentPlayerSave = 0;
             againSave = 0;
             int selectedEntry = 0;
-            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && status == 1){
+            while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){
                 selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
 
                 int playerCount = 0;
@@ -163,6 +163,7 @@ int main(){
                         }
 
                         status = 6;
+                        break;
                     }
                 }
                 draw_new_game_menu(selectedEntry, gameSettings, playerTypes);

@@ -10,8 +10,6 @@
 #include "draw.hpp"
 #include "game.hpp"
 
-#include <debug.h>
-
 int main(){
     int savearr[27] = {-1};
     ti_var_t sv;
@@ -298,8 +296,15 @@ int main(){
                             r = rand() % 6 + 1;
                             *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[2], gameSettings[1]);
                             draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
+                            start_die_animation(r);
                             
                             msleep(500);
+
+                            if(selectedPlayer != -1){
+                                gfx_SetColor(BACKGROUND_YELLOW);
+                                gfx_FillRectangle_NoClip(150, 110, 20, 20); //Remove the old die
+                                gfx_BlitBuffer();
+                            }
                             
                             kb_Scan();
 
@@ -319,9 +324,17 @@ int main(){
                         place++;
 
                         if(gameSettings[3] - place <= 1){
-                            draw_win_screen(winner, place, (14 + gameSettings[0] * 13) - (winBoard[0] + winBoard[1] + winBoard[2] + winBoard[3] + winBoard[4] + winBoard[5]));
+                            // alternative:     draw_win_screen(winner, place, ((bool)(((playerTypes[0] + 1) * 2) % 3) * 2 + (bool)(((playerTypes[1] + 1) * 2) % 3) * 3 + (bool)(((playerTypes[2] + 1) * 2) % 3) * 4 + (bool)(((playerTypes[3] + 1) * 2) % 3) * 5 + (bool)(((playerTypes[4] + 1) * 2) % 3) * 6 + (bool)(((playerTypes[5] + 1) * 2) % 3) * 7) - (winBoard[0] + winBoard[1] + winBoard[2] + winBoard[3] + winBoard[4] + winBoard[5]));
+                            for(int i = 0; i < BOARD_DATA[4]; i++){
+                                if(playerTypes[i] != 2 && winner - 2 != i){
+                                    draw_win_screen(winner, place, i);
+                                    break;
+                                }else if(gameSettings[3] == 1){
+                                    draw_win_screen(winner, place, -2);
+                                }
+                            }
                         }else{
-                            draw_win_screen(winner, place, 0);
+                            draw_win_screen(winner, place, -1);
                         }
 
                         while(kb_Data[6] != kb_Clear){

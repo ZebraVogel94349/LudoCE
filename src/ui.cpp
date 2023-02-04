@@ -112,10 +112,14 @@ void draw_win_screen(int winner, int place, int lastPlace){
         gfx_PrintString(" is 5th");
     }
 
-    if(lastPlace){
-        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[lastPlace - 2]) + gfx_GetStringWidth(" is last")) / 2, 90);
-        gfx_PrintString(colors[lastPlace - 2]);
+    if(lastPlace > -1){
+        gfx_SetTextXY(160 - (gfx_GetStringWidth(colors[lastPlace]) + gfx_GetStringWidth(" is last")) / 2, 90);
+        gfx_PrintString(colors[lastPlace]);
         gfx_PrintString(" is last");
+    }
+    else if(lastPlace == -2){
+        gfx_SetTextXY(160 - gfx_GetStringWidth("Why are you playing alone? :O") / 2, 90);
+        gfx_PrintString("Why are you playing alone? :O");
     }
     
     gfx_PrintStringXY("Press [del] to return to the main menu", 160 - gfx_GetStringWidth("Press [del] to return to the main menu") / 2, 130);

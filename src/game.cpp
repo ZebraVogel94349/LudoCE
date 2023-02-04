@@ -163,7 +163,7 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength, i
             movableCounter++;
         }
         occupyingPlayer = occupied_by(move_n_fields(pieceColor, playerPositions[i], n), playerPositions);
-        if(occupyingPlayer != -1 && get_color(occupyingPlayer) != pieceColor && playersMovable[i]){
+        if(occupyingPlayer != -1 && get_color(occupyingPlayer) != pieceColor && playersMovable[i - playerNumberStart]){
             throwoutPossible[i - playerNumberStart] = true;
             throwoutCounter++;
         }
@@ -182,12 +182,7 @@ int *move_enemy(int playerPositions[], int pieceColor, int n, int botStrength, i
         for(int i = playerNumberStart; i < playerNumberStart + figureCount; i++){
             if(playersMovable[i - playerNumberStart] && rand() % (botStrength + 2) != 0){
                 playerPositions[BOARD_DATA[0]] = playerPositions[i];
-                if(throwoutPossible[i - playerNumberStart]){
-                    playerPositions = throw_out(playerPositions, i, playerPositions[i], n);
-                }
-                else{
-                    playerPositions[i] = move_n_fields(pieceColor, playerPositions[i], n);
-                }
+                playerPositions[i] = move_n_fields(pieceColor, playerPositions[i], n);
                 return playerPositions;
             }  
         }

@@ -156,7 +156,7 @@ int main(){
                             }
                         }
 
-                        for(int i = 0; i < (gameSettings[3]) * 4; i++){ //Set position of all disabled figures to -1
+                        for(int i = 0; i < BOARD_DATA[0]; i++){ //Set position of all disabled figures to -1
                             if(i % BOARD_DATA[2] >= gameSettings[1]){
                                 playerPositions[i] = -1;
                             }         
@@ -241,7 +241,6 @@ int main(){
                                         *playerPositions = *move_player(playerPositions, i, selectedPlayer, r);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                         draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i);
-                                        draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer]);
                                         break;
                                     }
                                     

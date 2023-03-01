@@ -128,7 +128,7 @@ bool is_player_movable(int playerPositions[], int pieceColor, int selectedPlayer
         return false;
     }
     for(int i = 0; i < figureCount; i++){
-        if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + i] == startPoint){
+        if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + i] == startPoint && get_color(occupied_by(move_n_fields(pieceColor, playerPositions[playerNumberStart + i], n), playerPositions)) != pieceColor){
             return false;
         }
     }

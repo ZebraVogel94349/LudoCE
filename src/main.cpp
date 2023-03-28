@@ -11,7 +11,7 @@
 #include "game.hpp"
 
 int main(){
-    int savearr[27] = {-1};
+    int savearr[37] = {-1};
     ti_var_t sv;
     int previousSelectedEntry = 0;
 
@@ -23,7 +23,7 @@ int main(){
         bool loadEnabled = false;
         sv = ti_Open("LUDOSV","r");
 	    if(sv != 0){
-            ti_Read(savearr,81,1,sv);
+            ti_Read(savearr,111,1,sv);
             ti_Close(sv);
             loadEnabled = true;
         }
@@ -32,7 +32,7 @@ int main(){
         }
         if(savearr[0] != -1 && savearr[0] != VERSION){//Delete the saved game if the version differs
             ti_Delete("LUDOSV");
-            for(int i = 0; i < 27; i++){
+            for(int i = 0; i < 37; i++){
                 savearr[i] = 0;
             }
             loadEnabled = false;
@@ -44,9 +44,19 @@ int main(){
         int winBoard[6] = {0, 0, 0, 0, 0, 0}; // 1., 2., 3., 4., 5., 6.
         bool exit = false;
         int status = 0;
-        int playerPositions[25] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27}; // {72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 27}; // {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
+
+        int defaultPlayerPositions1[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
+        int defaultPlayerPositions2[25] = {72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 27};
+        
+        int* playerPositions;
+        const int* BOARD_DATA;
+        const int (*BOARD)[3];
+        const int (*BOARD_PLAYER_NAMING)[2];
+        const int (*BOARD_COLOR_DATA)[5];
+
+
         int gameSettingsBorder[3] = {1, 3, 2};
-        int gameSettings[4] = {1, 3, 1, 0}; //Board Type, Figure count, Bot Strength, Player count
+        int gameSettings[4] = {0, 3, 1, 0}; //Board Type, Figure count, Bot Strength, Player count
         int r = 0;
         int again = 0;
         int playerTypes[6] = {2, 2, 2, 2, 2, 2};
@@ -74,11 +84,26 @@ int main(){
                         gameSettings[1] = savearr[2];
                         gameSettings[2] = savearr[3];
                         gameSettings[3] = savearr[4];
-                        for(int i = 0; i < BOARD_DATA[gameSettings[0]][0] / BOARD_DATA[gameSettings[0]][2]; i++){
+                        if(gameSettings[0] == 0){
+                            playerPositions = defaultPlayerPositions1;
+                            BOARD_DATA = BOARD_DATA1;
+                            BOARD = BOARD1;
+                            BOARD_COLOR_DATA = BOARD_COLOR_DATA1;
+                            BOARD_PLAYER_NAMING = BOARD_PLAYER_NAMING1;
+                        }
+                        else{
+                            playerPositions = defaultPlayerPositions2;
+                            BOARD_DATA = BOARD_DATA2;
+                            BOARD = BOARD2;
+                            BOARD_COLOR_DATA = BOARD_COLOR_DATA2;
+                            BOARD_PLAYER_NAMING = BOARD_PLAYER_NAMING2;
+                        }
+
+                        for(int i = 0; i < BOARD_DATA[4]; i++){
                             playerTypes[i] = savearr[7 + i];
                         }
-                        for(int i = 0; i < BOARD_DATA[gameSettings[0]][0]; i++){
-                            playerPositions[i] = savearr[7 + BOARD_DATA[gameSettings[0]][2] + i];
+                        for(int i = 0; i < BOARD_DATA[0]; i++){
+                            playerPositions[i] = savearr[7 + BOARD_DATA[4] + i];
                         }
                         status = 6;
                         break;
@@ -109,10 +134,24 @@ int main(){
             againSave = 0;
             int selectedEntry = 0;
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){
+                if(gameSettings[0] == 0){
+                    playerPositions = defaultPlayerPositions1;
+                    BOARD_DATA = BOARD_DATA1;
+                    BOARD = BOARD1;
+                    BOARD_COLOR_DATA = BOARD_COLOR_DATA1;
+                    BOARD_PLAYER_NAMING = BOARD_PLAYER_NAMING1;
+                }
+                else{
+                    playerPositions = defaultPlayerPositions2;
+                    BOARD_DATA = BOARD_DATA2;
+                    BOARD = BOARD2;
+                    BOARD_COLOR_DATA = BOARD_COLOR_DATA2;
+                    BOARD_PLAYER_NAMING = BOARD_PLAYER_NAMING2;
+                }
                 selectedEntry = menu_up_down(keycount, selectedEntry, 9, prevkey7);
 
                 int playerCount = 0;
-                for(int i = 0; i < BOARD_DATA[gameSettings[0]][0] / BOARD_DATA[gameSettings[0]][2];i++){ //assign player count value
+                for(int i = 0; i < BOARD_DATA[4]; i++){ //assign player count value
                     if(playerTypes[i] != 2){
                         playerCount++;
                     }
@@ -149,16 +188,16 @@ int main(){
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
                     if(selectedEntry == 9){ // start new game
                         gameSettings[1]++;
-                        for(int i = 0; i < BOARD_DATA[gameSettings[0]][0] / BOARD_DATA[gameSettings[0]][2]; i++){ //Set position of all disabled colors to -1
+                        for(int i = 0; i < BOARD_DATA[4]; i++){ //Set position of all disabled colors to -1
                             if(playerTypes[i] == 2){
-                                for(int j = 0; j < BOARD_DATA[gameSettings[0]][2]; j++){
-                                    playerPositions[j + i * BOARD_DATA[gameSettings[0]][2]] = -1;
+                                for(int j = 0; j < BOARD_DATA[2]; j++){
+                                    playerPositions[j + i * BOARD_DATA[2]] = -1;
                                 }
                             }
                         }
 
-                        for(int i = 0; i < BOARD_DATA[gameSettings[0]][0]; i++){ //Set position of all disabled figures to -1
-                            if(i % BOARD_DATA[gameSettings[0]][2] >= gameSettings[1]){
+                        for(int i = 0; i < BOARD_DATA[0]; i++){ //Set position of all disabled figures to -1
+                            if(i % BOARD_DATA[2] >= gameSettings[1]){
                                 playerPositions[i] = -1;
                             }         
                         }
@@ -186,11 +225,11 @@ int main(){
         if(status == 6){
             gfx_FillScreen(BACKGROUND_YELLOW);
             while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !exit){
-                draw_board(gameSettings[0]);
-                draw_player(playerPositions, 0, BOARD_DATA[gameSettings[0]][0], gameSettings[0]);
+                draw_board(BOARD, BOARD_DATA);
+                draw_player(playerPositions, 0, BOARD_DATA[0], BOARD, BOARD_DATA);
                 gfx_BlitBuffer();
 
-                for(int i = 2; i < 2 + BOARD_DATA[gameSettings[0]][0] / BOARD_DATA[gameSettings[0]][2] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], gameSettings[0]) && !exit; i++){
+                for(int i = 2; i < 2 + BOARD_DATA[4] && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], BOARD_DATA) && !exit; i++){
                     if(currentPlayerSave != 0){
                         i = currentPlayerSave;
                         currentPlayerSave = 0;
@@ -202,8 +241,8 @@ int main(){
                     }
                     if(playerTypes[i - 2] == 0){//if it's a real player's turn
                         r = 0;
-                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[gameSettings[0]][0]], i, gameSettings[0]);
-                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], gameSettings[0]); k++){
+                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], BOARD_DATA); k++){
                             if(selectedPlayer != -1){
                                 gfx_SetColor(BACKGROUND_YELLOW);
                                 gfx_FillRectangle_NoClip(150, 110, 20, 20); //Remove the old die
@@ -218,13 +257,13 @@ int main(){
                                 break;
                             }
                             r = rand() % 6 + 1;
-                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[gameSettings[0]][0]], i, gameSettings[0]);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
                             start_die_animation(r);
                             prevkey1 = kb_Data[1];
                             prevkey7 = kb_Data[7];
                             kb_Scan();
                             for(int j = 0; j < gameSettings[1]; j++){//select the first movable player
-                                if(is_player_movable(playerPositions, i, j, r, gameSettings[1], gameSettings[0])){
+                                if(is_player_movable(playerPositions, i, j, r, gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA)){
                                     selectedPlayer = j;
                                     break;
                                 }else{
@@ -234,14 +273,14 @@ int main(){
                             if(selectedPlayer != -1){
                                 while(kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del){//wait for 2nd to move the player
                                     // draw selections
-                                    draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[gameSettings[0]][0]], i, gameSettings[0]);
-                                    draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[gameSettings[0]][2] + selectedPlayer], r, gameSettings[0]), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[gameSettings[0]][2] + oldSelection], r, gameSettings[0]), gameSettings[0]);
-                                    draw_player_selection(playerPositions, (i - 2) * BOARD_DATA[gameSettings[0]][2] + selectedPlayer, (i - 2) * BOARD_DATA[gameSettings[0]][2] + oldSelection, gameSettings[0]);
+                                    draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
+                                    draw_potential_field(move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], r, BOARD_DATA, BOARD_COLOR_DATA), move_n_fields(i, playerPositions[(i - 2) * BOARD_DATA[2] + oldSelection], r, BOARD_DATA, BOARD_COLOR_DATA), BOARD, BOARD_DATA);
+                                    draw_player_selection(playerPositions, (i - 2) * BOARD_DATA[2] + selectedPlayer, (i - 2) * BOARD_DATA[2] + oldSelection, BOARD, BOARD_DATA);
                                     
                                     if(kb_Data[1] == kb_2nd && kb_Data[1] != prevkey1){//move the player
-                                        *playerPositions = *move_player(playerPositions, i, selectedPlayer, r, gameSettings[0]);
-                                        draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[gameSettings[0]][2] + selectedPlayer], gameSettings[0]);
-                                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[gameSettings[0]][0]], i, gameSettings[0]);
+                                        *playerPositions = *move_player(playerPositions, i, selectedPlayer, r, BOARD_DATA, BOARD_COLOR_DATA);
+                                        draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], BOARD, BOARD_DATA);
+                                        draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
                                         break;
                                     }
                                     
@@ -254,7 +293,7 @@ int main(){
                                             else{
                                                 selectedPlayer = gameSettings[1] - 1;
                                             }
-                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[1], gameSettings[0])){
+                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA)){
                                                 break;
                                             }
                                         }
@@ -269,7 +308,7 @@ int main(){
                                             else{
                                                 selectedPlayer = 0;
                                             }
-                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[1], gameSettings[0])){
+                                            if(is_player_movable(playerPositions, i, selectedPlayer, r, gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA)){
                                                 break;
                                             }
                                         }
@@ -282,7 +321,7 @@ int main(){
                                 prevkey7 = kb_Data[7];
                                 kb_Scan();
                             }
-                            if(check_for_order(playerPositions, i, gameSettings[1], gameSettings[0]) && again < 3){
+                            if(check_for_order(playerPositions, i, gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA) && again < 3){
                                 again++;
                             }
                             savearr[5] = i;
@@ -293,10 +332,10 @@ int main(){
                         }
                     }
                     else if(playerTypes[i - 2] == 1){
-                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], gameSettings[0]); k++){
+                        for(int k = again - 1; k < again && kb_Data[6] != kb_Clear && kb_Data[1] != kb_Del && !check_for_win(playerPositions, gameSettings[1], BOARD_DATA); k++){
                             r = rand() % 6 + 1;
-                            *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[2], gameSettings[1], gameSettings[0]);
-                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[gameSettings[0]][0]], i, gameSettings[0]);
+                            *playerPositions = *move_enemy(playerPositions, i, r, gameSettings[2], gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA);
+                            draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
                             start_die_animation(r);
                             
                             msleep(500);
@@ -309,7 +348,7 @@ int main(){
                             
                             kb_Scan();
 
-                            if(check_for_order(playerPositions, i, gameSettings[1], gameSettings[0]) && again < 3){
+                            if(check_for_order(playerPositions, i, gameSettings[1], BOARD_DATA, BOARD_COLOR_DATA) && again < 3){
                                 again++;
                             } 
                             savearr[5] = i;
@@ -320,13 +359,13 @@ int main(){
                         }
                     }
                     if(r == 6){i--;}
-                    if((winner = check_for_win(playerPositions, gameSettings[1], gameSettings[0]))){
+                    if((winner = check_for_win(playerPositions, gameSettings[1], BOARD_DATA))){
                         winBoard[place] = winner;
                         place++;
 
                         if(gameSettings[3] - place <= 1){
                             // alternative:     draw_win_screen(winner, place, ((bool)(((playerTypes[0] + 1) * 2) % 3) * 2 + (bool)(((playerTypes[1] + 1) * 2) % 3) * 3 + (bool)(((playerTypes[2] + 1) * 2) % 3) * 4 + (bool)(((playerTypes[3] + 1) * 2) % 3) * 5 + (bool)(((playerTypes[4] + 1) * 2) % 3) * 6 + (bool)(((playerTypes[5] + 1) * 2) % 3) * 7) - (winBoard[0] + winBoard[1] + winBoard[2] + winBoard[3] + winBoard[4] + winBoard[5]));
-                            for(int i = 0; i < BOARD_DATA[gameSettings[0]][4]; i++){
+                            for(int i = 0; i < BOARD_DATA[4]; i++){
                                 if(playerTypes[i] != 2 && winner - 2 != i){
                                     draw_win_screen(winner, place, i);
                                     break;
@@ -343,13 +382,13 @@ int main(){
                             kb_Scan();
                             if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
                                 if(gameSettings[3] - place > 1){
-                                    for(int j = 0; j < BOARD_DATA[gameSettings[0]][2]; j++){
-                                        playerPositions[j + (winner - 2) * BOARD_DATA[gameSettings[0]][2]] = -1;
+                                    for(int j = 0; j < BOARD_DATA[2]; j++){
+                                        playerPositions[j + (winner - 2) * BOARD_DATA[2]] = -1;
                                         playerTypes[winner - 2] = 2;
                                     }
                                     gfx_FillScreen(BACKGROUND_YELLOW);
-                                    draw_board(gameSettings[0]);
-                                    draw_player(playerPositions, 0, BOARD_DATA[gameSettings[0]][0], gameSettings[0]);
+                                    draw_board(BOARD, BOARD_DATA);
+                                    draw_player(playerPositions, 0, BOARD_DATA[0], BOARD, BOARD_DATA);
         
                                     gfx_BlitBuffer();
                                     r = 0;
@@ -374,14 +413,14 @@ int main(){
             savearr[2] = gameSettings[1];
             savearr[3] = gameSettings[2];
             savearr[4] = gameSettings[3];
-            for(int i = 0; i < BOARD_DATA[gameSettings[0]][0] / BOARD_DATA[gameSettings[0]][2]; i++){
+            for(int i = 0; i < BOARD_DATA[4]; i++){
                 savearr[7 + i] = playerTypes[i];
             }
-            for(int i = 0; i < BOARD_DATA[gameSettings[0]][0]; i++){
-                savearr[7 + BOARD_DATA[gameSettings[0]][0] + i] = playerPositions[i];
+            for(int i = 0; i < BOARD_DATA[0]; i++){
+                savearr[7 + BOARD_DATA[4] + i] = playerPositions[i];
             }
 	        sv = ti_Open("LUDOSV","w");
-            ti_Write(savearr,81,1,sv);
+            ti_Write(savearr,111,1,sv);
 	        ti_SetArchiveStatus(true, sv);
             ti_Close(sv);
             

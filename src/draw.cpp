@@ -31,83 +31,80 @@ void start_die_animation(int n){
 
 void draw_field(int x, int y, int r, int color){
     gfx_SetColor(BLACK);
-    gfx_FillCircle_NoClip(x + 10, y + 10, r);
+    gfx_FillCircle_NoClip(x + r, y + r, r);
     gfx_SetColor(color);
-    gfx_FillCircle_NoClip(x + 10, y + 10, r - 1);
+    gfx_FillCircle_NoClip(x + r, y + r, r - 1);
 }
 
-void draw_field_pos(int position){
-    draw_field(BOARD[position][0], BOARD[position][1], 8, BOARD[position][2]);
+void draw_field_pos(int position, int boardType){
+    draw_field(BOARD[boardType][position][0], BOARD[boardType][position][1], BOARD_DATA[boardType][5], BOARD[boardType][position][2]);
 }
 
-void connect_fields(int x0, int y0, int x1, int y1){
+void connect_fields(int x0, int y0, int x1, int y1, int r){
     gfx_SetColor(BLACK);
-    gfx_Line(x0 + 10, y0 + 10, x1 + 10, y1 + 10);
+    gfx_Line(x0 + r, y0 + r, x1 + r, y1 + r);
 }
 
-void draw_board(){
-    for(int i = 0; i < BOARD_DATA[1]; i++){
-        connect_fields(BOARD[i][0], BOARD[i][1], BOARD[i + 1][0], BOARD[i + 1][1]);
+void draw_board(int boardType){
+    for(int i = 0; i < BOARD_DATA[boardType][1]; i++){
+        connect_fields(BOARD[boardType][i][0], BOARD[boardType][i][1], BOARD[boardType][i + 1][0], BOARD[boardType][i + 1][1], BOARD_DATA[boardType][5]);
     }
-    connect_fields(BOARD[BOARD_DATA[1]][0], BOARD[BOARD_DATA[1]][1], BOARD[0][0], BOARD[0][1]);
-    for(int i = 0; i < BOARD_DATA[3]; i++){
-        draw_field_pos(i);
+    connect_fields(BOARD[boardType][BOARD_DATA[boardType][1]][0], BOARD[boardType][BOARD_DATA[boardType][1]][1], BOARD[boardType][0][0], BOARD[boardType][0][1], 7);
+    for(int i = 0; i < BOARD_DATA[boardType][3]; i++){
+        draw_field_pos(i, boardType);
     }
 }
 
-void draw_player(int playerPositions[], int start, int end){
+void draw_player(int playerPositions[], int start, int end, int boardType){
     for(int i = start; i < end; i++){
         if(playerPositions[i] != -1){
-            draw_field(BOARD[playerPositions[i]][0], BOARD[playerPositions[i]][1], 5, get_color(i));
+            draw_field(BOARD[boardType][playerPositions[i]][0] + 3, BOARD[boardType][playerPositions[i]][1] + 3, BOARD_DATA[boardType][5] - 3, get_color(i, boardType));
         }
     }
 }
 
-void draw_name(int playerTypes[], int playerIndicator){
-    int y;
-    char names[2][4][5] = {{"P1", "P2", "P3", "P4"}, {"CPU1", "CPU2", "CPU3", "CPU4"}};
+void draw_name(int playerTypes[], int playerIndicator, int boardType){
+    char names[2][6][5] = {{"P1", "P2", "P3", "P4", "P5", "P6"}, {"B1", "B2", "B3", "B4", "B5", "B6"}};
     int pb[2] = {0, 0};
     gfx_SetColor(BACKGROUND_YELLOW);
-    gfx_FillRectangle_NoClip(BOARD[56][0] - 5, BOARD[56][1] + 43, 50, 12);
-    gfx_FillRectangle_NoClip(BOARD[60][0] - 5, BOARD[60][1] + -12, 50, 12);
-    gfx_FillRectangle_NoClip(BOARD[64][0] - 5, BOARD[64][1] + -12, 50, 12);
-    gfx_FillRectangle_NoClip(BOARD[68][0] - 5, BOARD[68][1] + 43, 50, 12);
-    for(int i = 0; i < BOARD_DATA[4]; i++){
-        y = 45;
-        if(i == 1 || i == 2){
-            y = -10;
-        }
+    gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][0][0], BOARD_PLAYER_NAMING[boardType][0][1], 20, 15);
+    gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][1][0], BOARD_PLAYER_NAMING[boardType][1][1], 20, 15);
+    gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][2][0], BOARD_PLAYER_NAMING[boardType][2][1], 20, 15);
+    gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][3][0], BOARD_PLAYER_NAMING[boardType][3][1], 20, 15);
+    if(boardType == 1){
+        gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][4][0], BOARD_PLAYER_NAMING[boardType][4][1], 20, 15);
+        gfx_FillRectangle_NoClip(BOARD_PLAYER_NAMING[boardType][5][0], BOARD_PLAYER_NAMING[boardType][5][1], 20, 15);
+    }
+    for(int i = 0; i < BOARD_DATA[boardType][0] / BOARD_DATA[boardType][2]; i++){
         if(playerTypes[i] != 2){
             int width = gfx_GetStringWidth(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]]);
-            gfx_PrintStringXY(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]], BOARD[56 + i * 4][0] - width / 2 + 20, BOARD[56 + i * 4][1] + y);
+            gfx_PrintStringXY(names[playerTypes[i] != 0][pb[playerTypes[i] == 0]], BOARD_PLAYER_NAMING[boardType][i][0] + 2, BOARD_PLAYER_NAMING[boardType][i][1] + 2);
 
             gfx_SetColor(BLACK);
             if(i == (playerIndicator - 2)){
-                gfx_Rectangle_NoClip(BOARD[56 + (playerIndicator - 2) * 4][0] - width / 2 + 15, BOARD[56 + (playerIndicator - 2) * 4][1] + y - 2, width + 10, 12);
+                gfx_Rectangle_NoClip(BOARD_PLAYER_NAMING[boardType][i][0], BOARD_PLAYER_NAMING[boardType][i][1], width + 3, 12);
             }
             pb[playerTypes[i] == 0]++;
         }
     }
 }
 
-void draw_everything(int playerTypes[], int playerPositions[], int toClear, int playerIndicator){
-    if(occupied_by(toClear, playerPositions) == -1){
-        draw_field_pos(toClear);
+void draw_everything(int playerTypes[], int playerPositions[], int toClear, int playerIndicator, int boardType){
+    if(occupied_by(toClear, playerPositions, boardType) == -1){
+        draw_field_pos(toClear, boardType);
     }
-    draw_player(playerPositions, 0, BOARD_DATA[0]);
-    draw_name(playerTypes, playerIndicator);
-    gfx_SetColor(BACKGROUND_YELLOW);
-    gfx_FillRectangle_NoClip(5,5,20,20);
+    draw_player(playerPositions, 0, BOARD_DATA[boardType][0], boardType);
+    draw_name(playerTypes, playerIndicator, boardType);
     
     gfx_BlitBuffer();
 }
 
-void draw_player_selection(int *playerPositions, int selectedPlayer, int oldSelection){
-    draw_field_pos(playerPositions[oldSelection]);
-    draw_field(BOARD[playerPositions[selectedPlayer]][0], BOARD[playerPositions[selectedPlayer]][1], 7, BLACK);
+void draw_player_selection(int *playerPositions, int selectedPlayer, int oldSelection, int boardType){
+    draw_field_pos(playerPositions[oldSelection], boardType);
+    draw_field(BOARD[boardType][playerPositions[selectedPlayer]][0], BOARD[boardType][playerPositions[selectedPlayer]][1], BOARD_DATA[boardType][5], BLACK);
 }
 
-void draw_potential_field(int selectedField, int oldField){
-    draw_field_pos(oldField);
-    draw_field(BOARD[selectedField][0], BOARD[selectedField][1], 8, LIGHT_GREEN);
+void draw_potential_field(int selectedField, int oldField, int boardType){
+    draw_field_pos(oldField, boardType);
+    draw_field(BOARD[boardType][selectedField][0], BOARD[boardType][selectedField][1], BOARD_DATA[boardType][5], LIGHT_GREEN);
 }

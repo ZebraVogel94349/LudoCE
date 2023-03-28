@@ -1,0 +1,12 @@
+const int BLACK = 0;
+const int BACKGROUND_YELLOW = 1;
+const int BLUE = 2;
+const int RED = 3;
+const int YELLOW = 4;
+const int GREEN = 5;
+const int PURPLE = 6;
+const int CYAN = 7;
+const int WHITE = 8;
+const int LIGHT_GREEN = 9;
+const int GREY = 10;
+const int ORANGE = 11;

@@ -54,10 +54,9 @@ void draw_main_menu(int selectedButton, bool loadDisabled){
     gfx_FillRectangle_NoClip(120, 40, 80, 140);
     gfx_PrintStringXY("LudoCE 0.0.1", 160 - gfx_GetStringWidth("LudoCE 0.0.1") / 2, 5);
     draw_button(160, 40, "Load Game", loadDisabled, selectedButton == 0);
-    draw_button(160, 70, "New Game", true, selectedButton == 1);
-    draw_button(160, 100, "Settings", true, selectedButton == 2);
-    draw_button(160, 130, "About", true, selectedButton == 3);
-    draw_button(160, 160, "Exit", true, selectedButton == 4);
+    draw_button(160, 75, "New Game", true, selectedButton == 1);
+    draw_button(160, 110, "About", true, selectedButton == 2);
+    draw_button(160, 145, "Exit", true, selectedButton == 3);
     gfx_BlitBuffer();
 }
 

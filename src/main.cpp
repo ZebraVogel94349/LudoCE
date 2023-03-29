@@ -126,7 +126,7 @@ int main(){
             prevkey1 = kb_Data[1];
         }
         if(status == 0){
-            status = 4;
+            status = 3;
         }
 
         if(status == 1){//New game menu
@@ -429,7 +429,7 @@ int main(){
                 previousSelectedEntry = 1;
             }
         }
-        if(status == 3){
+        if(status == 2){
             int page = 0;
             while(kb_Data[6] != kb_Clear && !(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd) && kb_Data[1] != kb_Del){
                 gfx_FillScreen(BACKGROUND_YELLOW);
@@ -443,7 +443,7 @@ int main(){
             previousSelectedEntry = 3;
             prevkey1 = kb_Data[1];
         }
-        if(status == 4){
+        if(status == 3){
             break;
         }
     }

@@ -135,7 +135,7 @@ void print_wrapped_text(int x, int y, int width, char* text){
         if(text[i] == ' ' || text[i + 1] == 0 || text[i + 1] == '#'){
             if(lineWidth + (int)gfx_GetCharWidth(' ') + wordWidth > x + width){
                 lineWidth = 0;
-                gfx_SetTextXY(x, gfx_GetTextY() + 8); 
+                gfx_SetTextXY(x, gfx_GetTextY() + 9); 
             }
             for(int j = 0; j <= wordLength; j++){
                 gfx_PrintChar(text[i - wordLength + j]);
@@ -159,21 +159,20 @@ void draw_about(int page){
     gfx_SetTextXY(295, 5);
     gfx_PrintInt(page + 1, 1);
     gfx_PrintString("/3");
-    if(page != 0){
-        gfx_PrintStringXY("\x1e", 5, 5);
-    }
-    if(page != 2){
-        gfx_PrintStringXY("\x1f", 5, 230);
-    }
 
     if(page == 0){
-        print_wrapped_text(5, 5, 310, "Rules:#The goal of the game is to move all of your pieces into the house (the row  of four fields in your color). You start by rolling the die. If all of your pieces are still at the start or only some of them and the rest at the end of the house, you may roll the die three times in a row. After rolling the die, you have to move a piece forwards by the rolled number of pieces. If you roll a 6, you have to move one of the pieces from the start to the starting field of your color. You always have to keep the starting field free. If there are no more pieces at the start, you can move any piece you want 6 fields forwards. After rolling a 6, you have to roll the die again. If one of your pieces is moved to a field which is occupied by another player, you have to move the other players figure back to the player's start. You cannot move one of your figures to a field occupied by one of your own pieces. After you completed one round around the board with a piece, you move it into the house. Other players can't enter your house, so your pieces are save there. If all of your pieces are in the house (when playing with less than four pieces, they need to be at the last fields of the house), you win the game.");
+        print_wrapped_text(5, 5, 310, "Rules:#The goal of the game is to move all of your pieces into the house (the row  of four fields in your color). You start by rolling the die. If all of your pieces are still at the start or only some of them and the rest at the end of the house, you may roll the die three times in a row. After rolling the die, you have to move a piece forwards by the rolled number of pieces. If you roll a 6, you have to move one of the pieces from the start to the starting field of your color. You always have to keep the starting field free. If there are no more pieces at the start, you can move any piece you want 6 fields forwards. After rolling a 6, you have to roll the die again. If one of your pieces is moved to a field which is occupied by another player, you have to move the other players figure back to the player's start. You cannot move one of your figures to a field occupied by one of your own pieces. After you completed one round around the board with a piece, you move it into the house. Other players can't enter your house, so your pieces are save there. If all of your pieces are in the house, you win the game.");
     }
     else if(page == 1){
         print_wrapped_text(5, 15, 230, "Controls:#[2nd]: Roll the die/move a piece#[\x11]/[\x10]: select the piece to move#[del]: save and return to main menu#[clear]: save and quit");
     }
     else if(page == 2){
-        print_wrapped_text(5, 15, 150, "Credits:# ");
+        gfx_PrintStringXY("Credits", 160 - gfx_GetStringWidth("Credits") / 2, 65);
+        gfx_PrintStringXY("Developers:", 160 - gfx_GetStringWidth("Developers:") / 2, 80);
+        gfx_PrintStringXY("- einsmaxe", 160 - gfx_GetStringWidth("- einsmaxe") / 2, 90);
+        gfx_PrintStringXY("- ZebraVogel94349", 160 - gfx_GetStringWidth("- ZebraVogel94349") / 2, 100);
+        gfx_PrintStringXY("Special thanks to:", 160 - gfx_GetStringWidth("Special thanks to:") / 2, 120);
+        gfx_PrintStringXY("2023", 160 - gfx_GetStringWidth("2023") / 2, 200);
     }
     
     gfx_BlitBuffer();

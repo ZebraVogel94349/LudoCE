@@ -126,8 +126,38 @@ void draw_win_screen(int winner, int place, int lastPlace){
     gfx_BlitBuffer();
 }
 
+void print_underlined_char(char c){
+    gfx_PrintChar(c);
+    gfx_HorizLine_NoClip(gfx_GetTextX() - 9, gfx_GetTextY() + 8, 9);
+}
+
+void print_wrapped_text(int x, int y, int width, char* text){
+    int lineWidth = 0;
+    int wordWidth = 0;
+    int wordLength = 0;
+    gfx_SetTextXY(x, y);
+    for(int i = 0; text[i] != 0; i++){
+         
+        if(text[i] == ' ' || text[i + 1] == 0){
+            if(lineWidth + (int)gfx_GetCharWidth(' ') + wordWidth > x + width){
+                lineWidth = 0;
+                gfx_SetTextXY(x, gfx_GetTextY() + 10); 
+            }
+            for(int j = 0; j <= wordLength; j++){
+                    gfx_PrintChar(text[i - wordLength + j]);
+            }
+            lineWidth = lineWidth + gfx_GetCharWidth(' ') + wordWidth;
+            wordWidth = 0;
+            wordLength = 0;
+        }
+        else{
+            wordWidth = wordWidth + (gfx_GetCharWidth(text[i]));
+            wordLength++;
+        }
+    }
+}
+
 void draw_about(int page){
-    const char *p1l1 = "Lorem ipsum dolor sit amet, ...";
     const char *p2l1 = "consetetur sadipscing elitr, sed diam ...";
     const char *p3l1 = "nonumy eirmod tempor invidunt ut labore ...";
     gfx_SetTextXY(295, 5);
@@ -141,7 +171,7 @@ void draw_about(int page){
     }
 
     if(page == 0){
-        gfx_PrintStringXY(p1l1, 5, 20);
+        print_wrapped_text(5, 20, 150, "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.");
     }
     else if(page == 1){
         gfx_PrintStringXY(p2l1, 5, 20);
@@ -162,3 +192,4 @@ int menu_up_down(int keycount, int selectedEntry, int lastEntry, kb_key_t prevke
     }
     return selectedEntry;
 }
+

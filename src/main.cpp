@@ -74,9 +74,9 @@ int main(){
         if(status == 0){//Main Menu
             int selectedEntry = previousSelectedEntry;
             while(kb_Data[6] != kb_Clear){
-                selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
+                selectedEntry = menu_up_down(keycount, selectedEntry, 3, prevkey7);
                 if(selectedEntry == 0 && !loadEnabled){//Skip disabled entry
-                    selectedEntry = menu_up_down(keycount, selectedEntry, 4, prevkey7);
+                    selectedEntry = menu_up_down(keycount, selectedEntry, 3, prevkey7);
                 }
                 if(kb_Data[1] == kb_2nd && prevkey1 != kb_2nd){
                     if(selectedEntry == 0){//Load Game

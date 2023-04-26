@@ -115,23 +115,29 @@ bool is_player_movable(int playerPositions[], int pieceColor, int selectedPlayer
     startPoint = BOARD_COLOR_DATA[pieceColor - 2][2];
 
     int occupyingPlayer = occupied_by(move_n_fields(pieceColor, playerPositions[playerNumberStart + selectedPlayer], n, BOARD_DATA, BOARD_COLOR_DATA), playerPositions, BOARD_DATA);
+    
+    //if move not possible because field is occupied
     if(get_color(occupyingPlayer, BOARD_DATA) == pieceColor){
         return false;
     }
-    else if(!all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + selectedPlayer] == startPoint){//player needs to move from start point
-        return true;
-    }
-    else if(n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && pieceColor != get_color(occupyingPlayer, BOARD_DATA)){;//need to move out of house
-        if(playerPositions[playerNumberStart + selectedPlayer] >= hm_pos){
-            return true;
-        }
-        return false;
-    }
+
+    //if other figure is on start field and can move from there
     for(int i = 0; i < figureCount; i++){
         if(i != selectedPlayer && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && playerPositions[playerNumberStart + i] == startPoint && get_color(occupied_by(move_n_fields(pieceColor, playerPositions[playerNumberStart + i], n, BOARD_DATA, BOARD_COLOR_DATA), playerPositions, BOARD_DATA), BOARD_DATA) != pieceColor){
             return false;
         }
     }
+
+    //if figure is in home and no 6 was rolled
+    if(playerPositions[playerNumberStart + selectedPlayer] >= hm_pos && n != 6){
+        return false;
+    }
+
+    //if you need to move a figure to the start field
+    if(playerPositions[playerNumberStart + selectedPlayer] < hm_pos && n == 6 && !all_out(playerPositions, playerNumberStart, hm_pos, figureCount) && get_color(occupied_by(startPoint, playerPositions, BOARD_DATA), BOARD_DATA) != pieceColor){
+        return false;
+    }
+
     return true;
 }
 

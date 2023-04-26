@@ -90,7 +90,7 @@ void draw_name(int playerTypes[], int playerIndicator, const int* BOARD_DATA, co
 }
 
 void draw_everything(int playerTypes[], int playerPositions[], int toClear, int playerIndicator, const int (*BOARD)[3], const int* BOARD_DATA, const int (*BOARD_PLAYER_NAMING)[2], int boardType){
-    if(occupied_by(toClear, playerPositions, BOARD_DATA) == -1){
+    if(toClear != -1 && occupied_by(toClear, playerPositions, BOARD_DATA) == -1){
         draw_field_pos(toClear, BOARD, BOARD_DATA);
     }
     draw_player(playerPositions, 0, BOARD_DATA[0], BOARD, BOARD_DATA);

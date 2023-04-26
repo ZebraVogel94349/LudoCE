@@ -45,8 +45,8 @@ int main(){
         bool exit = false;
         int status = 0;
 
-        int defaultPlayerPositions1[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 27};
-        int defaultPlayerPositions2[25] = {72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 27};
+        int defaultPlayerPositions1[17] = {56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, -1};
+        int defaultPlayerPositions2[25] = {72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, -1};
         
         int* playerPositions;
         const int* BOARD_DATA;
@@ -281,6 +281,7 @@ int main(){
                                         *playerPositions = *move_player(playerPositions, i, selectedPlayer, r, BOARD_DATA, BOARD_COLOR_DATA);
                                         draw_field_pos(playerPositions[(i - 2) * BOARD_DATA[2] + selectedPlayer], BOARD, BOARD_DATA);
                                         draw_everything(playerTypes, playerPositions, playerPositions[BOARD_DATA[0]], i, BOARD, BOARD_DATA, BOARD_PLAYER_NAMING, gameSettings[0]);
+                                        playerPositions[BOARD_DATA[0]] = -1;
                                         break;
                                     }
                                     
